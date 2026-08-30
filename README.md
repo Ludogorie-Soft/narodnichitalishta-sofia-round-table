@@ -46,27 +46,27 @@ Open [http://localhost:3000](http://localhost:3000) for Bulgarian and [http://lo
 
 ## Scripts
 
-| Script                 | Purpose                                   |
-| ---------------------- | ----------------------------------------- |
-| `npm run dev`          | Next.js development server                |
-| `npm run build`        | Production build                          |
-| `npm run start`        | Serve the production build                |
-| `npm run lint`         | ESLint                                    |
-| `npm run format`       | Prettier write                            |
-| `npm run format:check` | Prettier check (CI)                       |
+| Script                 | Purpose                                     |
+| ---------------------- | ------------------------------------------- |
+| `npm run dev`          | Next.js development server                  |
+| `npm run build`        | Production build                            |
+| `npm run start`        | Serve the production build                  |
+| `npm run lint`         | ESLint                                      |
+| `npm run format`       | Prettier write                              |
+| `npm run format:check` | Prettier check (CI)                         |
 | `npm run typecheck`    | Generate Next.js types, then `tsc --noEmit` |
-| `npm run test`         | Vitest unit tests                         |
-| `npm run test:e2e`     | Playwright browser tests                  |
-| `npm run db:generate`  | Generate Drizzle migrations (Phase 2)     |
-| `npm run db:migrate`   | Apply Drizzle migrations (Phase 2)        |
-| `npm run db:seed`      | Idempotent content seed (Phase 5)         |
-| `npm run admin:create` | Create an administrator locally (Phase 3) |
+| `npm run test`         | Vitest unit tests                           |
+| `npm run test:e2e`     | Playwright browser tests                    |
+| `npm run db:generate`  | Generate Drizzle SQL migrations             |
+| `npm run db:migrate`   | Apply reviewed migrations to `DATABASE_URL` |
+| `npm run db:seed`      | Idempotent content seed (Phase 5)           |
+| `npm run admin:create` | Create an administrator locally (Phase 3)   |
 
 ## Database migrations
 
 Production schema changes live in committed SQL files under `drizzle/`. Generate them with `npm run db:generate`, review the SQL, apply to the development Neon branch with `npm run db:migrate`, then apply the same reviewed files to production during deployment. Do not use schema push against production.
 
-These commands are placeholders until Phase 2.
+Neon Free-plan limits and scale-to-zero behavior are documented in `docs/operations.md`.
 
 ## Seeding
 

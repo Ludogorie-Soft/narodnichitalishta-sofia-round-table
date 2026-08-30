@@ -4,7 +4,8 @@ coverage
 playwright-report
 test-results
 package-lock.json
-*.docx
+drizzle
+*.sql
 docs
 public/brand
 sofia-round-table-implementation-plan.md

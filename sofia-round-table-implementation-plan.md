@@ -50,15 +50,15 @@ Policy note: Vercel currently describes Hobby as a free plan for personal, non-c
 
 ### Architecture rules
 
-- [ ] Keep all database, authentication, mutation, and secret-handling code server-only.
+- [x] Keep all database, authentication, mutation, and secret-handling code server-only.
 - [ ] Use the Node.js runtime for authenticated admin and mutation routes.
-- [ ] Use the Neon serverless driver through Drizzle.
+- [x] Use the Neon serverless driver through Drizzle.
 - [ ] Never store image bytes in PostgreSQL.
 - [ ] Never write uploads to the Vercel application filesystem because it is not persistent.
 - [ ] Use Server Components for public content and Client Components only where interaction requires them.
 - [ ] Use server actions or route handlers for mutations, with session checks and Zod validation inside every mutation.
 - [ ] Revalidate the public-site cache immediately after a successful content change.
-- [ ] Keep production schema changes in committed, reviewable migration files; do not use schema push against production.
+- [x] Keep production schema changes in committed, reviewable migration files; do not use schema push against production.
 
 ## 4. URL and language design
 
@@ -133,33 +133,33 @@ docs/
 
 ### Authentication tables
 
-- [ ] Generate the Better Auth schema for `user`, `session`, `account`, and `verification` using the Drizzle adapter.
-- [ ] Add an `active` or equivalent server-owned field that allows an administrator account to be disabled.
-- [ ] Ensure email addresses are unique and normalized.
+- [x] Generate the Better Auth schema for `user`, `session`, `account`, and `verification` using the Drizzle adapter.
+- [x] Add an `active` or equivalent server-owned field that allows an administrator account to be disabled.
+- [x] Ensure email addresses are unique and normalized.
 - [ ] Do not expose a public signup endpoint or signup UI.
 
 ### Application tables
 
-- [ ] Create a singleton `site_settings` table for dates, timezone, venue, address, map URL, public links, social links, and display options.
-- [ ] Create `content_sections` with a stable slug, Bulgarian and English headings/content, sort order, visibility, and timestamps.
-- [ ] Create `navigation_items` with Bulgarian and English labels, anchor or external URL, sort order, and visibility.
-- [ ] Create `media_assets` with Blob URL, Blob pathname, MIME type, dimensions, Bulgarian and English alt text, creator, and timestamps.
-- [ ] Create `partners` with name, media reference, URL, sort order, and visibility.
-- [ ] Create `schedule_days` with date, Bulgarian and English titles/subtitles, sort order, and visibility.
-- [ ] Create `schedule_panels` with day reference, start/end times, Bulgarian and English titles/descriptions, sort order, and visibility.
-- [ ] Create `schedule_items` with day reference, optional panel reference, start/end times, item type, Bulgarian and English title/description, status, sort order, and visibility.
-- [ ] Create lightweight `speakers` with Bulgarian and English name and affiliation/title only; do not add biographies, photos, or public profile slugs.
-- [ ] Create `schedule_item_speakers` as an ordered many-to-many relation.
-- [ ] Create `audit_log` for administrator, action, entity type, entity ID, timestamp, and a non-sensitive summary.
-- [ ] Add foreign keys and intentional delete behavior to every relation.
-- [ ] Add indices for day ordering, panel ordering, item ordering, visible content queries, and normalized user email.
-- [ ] Use PostgreSQL `date` for conference days and `time` for local schedule times.
-- [ ] Validate that 18–19 September 2026 render consistently in the `Europe/Sofia` timezone.
+- [x] Create a singleton `site_settings` table for dates, timezone, venue, address, map URL, public links, social links, and display options.
+- [x] Create `content_sections` with a stable slug, Bulgarian and English headings/content, sort order, visibility, and timestamps.
+- [x] Create `navigation_items` with Bulgarian and English labels, anchor or external URL, sort order, and visibility.
+- [x] Create `media_assets` with Blob URL, Blob pathname, MIME type, dimensions, Bulgarian and English alt text, creator, and timestamps.
+- [x] Create `partners` with name, media reference, URL, sort order, and visibility.
+- [x] Create `schedule_days` with date, Bulgarian and English titles/subtitles, sort order, and visibility.
+- [x] Create `schedule_panels` with day reference, start/end times, Bulgarian and English titles/descriptions, sort order, and visibility.
+- [x] Create `schedule_items` with day reference, optional panel reference, start/end times, item type, Bulgarian and English title/description, status, sort order, and visibility.
+- [x] Create lightweight `speakers` with Bulgarian and English name and affiliation/title only; do not add biographies, photos, or public profile slugs.
+- [x] Create `schedule_item_speakers` as an ordered many-to-many relation.
+- [x] Create `audit_log` for administrator, action, entity type, entity ID, timestamp, and a non-sensitive summary.
+- [x] Add foreign keys and intentional delete behavior to every relation.
+- [x] Add indices for day ordering, panel ordering, item ordering, visible content queries, and normalized user email.
+- [x] Use PostgreSQL `date` for conference days and `time` for local schedule times.
+- [x] Validate that 18–19 September 2026 render consistently in the `Europe/Sofia` timezone.
 
 ### Suggested schedule enums
 
-- [ ] Define item types for `registration`, `opening`, `talk`, `roundtable`, `panel`, `discussion`, `break`, `lunch`, `visit`, and `closing`.
-- [ ] Define public status values for `confirmed`, `to_be_confirmed`, and `cancelled`.
+- [x] Define item types for `registration`, `opening`, `talk`, `roundtable`, `panel`, `discussion`, `break`, `lunch`, `visit`, and `closing`.
+- [x] Define public status values for `confirmed`, `to_be_confirmed`, and `cancelled`.
 - [ ] Display status as a translated badge and never embed “to be confirmed” only inside free text.
 
 ## 7. Phase 0 — Inputs and safeguards
@@ -206,14 +206,14 @@ docs/
 - [ ] Create separate production and development database branches if the selected Neon plan permits them.
 - [ ] Obtain pooled/serverless connection strings for the intended environments.
 - [ ] Configure `DATABASE_URL` locally and separately in Vercel Preview and Production.
-- [ ] Install Drizzle ORM, Drizzle Kit, and the Neon serverless driver.
-- [ ] Implement the server-only database client.
-- [ ] Implement all schemas and relations from Section 6.
-- [ ] Generate the initial SQL migration and review it before applying it.
+- [x] Install Drizzle ORM, Drizzle Kit, and the Neon serverless driver.
+- [x] Implement the server-only database client.
+- [x] Implement all schemas and relations from Section 6.
+- [x] Generate the initial SQL migration and review it before applying it.
 - [ ] Apply migrations to development first.
 - [ ] Run a clean-database migration test.
 - [ ] Apply reviewed migrations to production only during deployment.
-- [ ] Document Neon free-plan limits and scale-to-zero behavior in the operations guide.
+- [x] Document Neon free-plan limits and scale-to-zero behavior in the operations guide.
 
 ## 10. Phase 3 — Authentication and administrator management
 
