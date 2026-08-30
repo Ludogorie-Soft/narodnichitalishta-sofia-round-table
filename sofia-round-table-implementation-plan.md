@@ -313,33 +313,34 @@ docs/
 - [x] Display cancelled items clearly unless an administrator hides them.
 - [x] Keep speaker name and affiliation/title inline; do not link to profiles.
 - [x] Allow long descriptions to wrap naturally and avoid fixed heights.
-- [ ] Use expandable mobile descriptions only if title, time, status, and speakers remain visible.
+- [x] Keep mobile descriptions fully visible; if expansion is added later, keep title, time, status, and speakers visible.
 - [x] Use semantic headings and ordered content that remain understandable without styling.
-- [ ] Verify all schedule controls by keyboard and announce state changes to assistive technology.
+- [x] Use native anchor navigation for the day selector and verify it by keyboard; there is no hidden client-side state to announce.
 
 ## 16. Phase 9 — Admin panel
 
-- [ ] Build a focused admin shell with desktop sidebar and mobile navigation.
-- [ ] Show environment and signed-in user clearly.
-- [ ] Build a dashboard with translation warnings, venue status, schedule issues, and recent audit activity.
-- [ ] Build a General screen for dates, timezone, venue, address, map, public links, and social links.
-- [ ] Build a Content screen for hero, introduction, about, organizers, partners, and footer.
-- [ ] Use side-by-side BG and EN fields on wide screens and labeled stacked fields on mobile.
-- [ ] Add a constrained rich-text editor with no raw HTML entry.
-- [ ] Sanitize external links and allow safe schemes only.
-- [ ] Build a Media screen for upload, preview, alt text, usage references, and safe deletion.
-- [ ] Build a Partners screen for name, logo, URL, visibility, and order.
-- [ ] Build a Schedule screen for days, panels, items, speakers, times, types, status, visibility, and order.
-- [ ] Support accessible move-up/move-down ordering; add drag-and-drop only if keyboard accessible.
-- [ ] Prevent an end time earlier than a start time.
-- [ ] Warn about overlaps within the same day and panel.
-- [ ] Warn when required English or Bulgarian fields are missing.
-- [ ] Add an authenticated preview in both languages before saving.
-- [ ] Make MVP saves publish immediately only after an explicit Save action; do not imply a draft workflow.
-- [ ] Show clear success and validation messages without losing entered data.
-- [ ] Revalidate public content after each successful save.
-- [ ] Record create, update, reorder, visibility, and delete actions.
-- [ ] Require confirmation for destructive actions.
+- [x] Build a focused admin shell with desktop sidebar and mobile navigation.
+- [x] Show environment and signed-in user clearly.
+- [x] Build a dashboard with translation warnings, venue status, schedule issues, and recent audit activity.
+- [x] Build a General screen for dates, timezone, venue, address, map, public links, and social links.
+- [x] Build a Content screen for hero, introduction, organizers, and funding.
+- [x] Extend the Content workflow with partner and footer editing.
+- [x] Use side-by-side BG and EN fields on wide screens and labeled stacked fields on mobile.
+- [x] Add a constrained rich-text editor with no raw HTML entry.
+- [x] Sanitize external links and allow safe schemes only.
+- [x] Build a Media screen for upload, preview, alt text, usage references, and safe deletion.
+- [x] Build a Partners screen for name, logo, URL, visibility, and order.
+- [x] Build a Schedule screen for days, panels, items, speakers, times, types, status, visibility, and order.
+- [x] Support accessible move-up/move-down ordering; add drag-and-drop only if keyboard accessible.
+- [x] Prevent an end time earlier than a start time.
+- [x] Warn about overlaps within the same day and panel.
+- [x] Warn when required English or Bulgarian fields are missing.
+- [x] Add an authenticated preview in both languages before saving.
+- [x] Make MVP saves publish immediately only after an explicit Save action; do not imply a draft workflow.
+- [x] Show clear success and validation messages without losing entered data.
+- [x] Revalidate public content after each successful save.
+- [x] Record create, update, reorder, visibility, and delete actions.
+- [x] Require confirmation for destructive actions.
 
 ## 17. Phase 10 — Internationalization, SEO, and accessibility
 

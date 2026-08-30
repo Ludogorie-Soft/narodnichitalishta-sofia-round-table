@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
-export function SignOutButton() {
+export function SignOutButton({ className = "" }: { className?: string }) {
   const router = useRouter();
 
   async function signOut() {
@@ -16,7 +16,7 @@ export function SignOutButton() {
     <button
       type="button"
       onClick={signOut}
-      className="text-sm underline underline-offset-4"
+      className={`text-sm underline underline-offset-4 ${className}`}
     >
       Изход
     </button>

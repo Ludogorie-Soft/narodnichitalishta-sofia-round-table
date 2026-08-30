@@ -1,4 +1,5 @@
 import type { ScheduleItemStatus, ScheduleItemType } from "../src/lib/datetime";
+import { partnerBrandLogos } from "../src/lib/partner-brand-logos";
 
 type RichTextDocument = {
   type: "doc";
@@ -43,15 +44,13 @@ export const contentSectionSeeds = [
   {
     id: "section-hero",
     slug: "hero",
-    headingBg: "МЕЖДУНАРОДНА КОНФЕРЕНЦИЯ",
-    headingEn: "INTERNATIONAL CONFERENCE",
+    headingBg: "Културата като катализатор за местно и регионално развитие",
+    headingEn: "Culture as a Catalyst for Local and Regional Development",
     contentBg: doc(
-      "Културата като катализатор за местно и регионално развитие",
-      "От локални партньорства към по-широко европейско измерение",
+      "От локални партньорства към по-широко европейско измерение.",
     ),
     contentEn: doc(
-      "Culture as a Catalyst for Local and Regional Development",
-      "From Local Partnerships to a Broader European Dimension",
+      "From Local Partnerships to a Broader European Dimension.",
     ),
     sortOrder: 0,
     visible: true,
@@ -137,11 +136,22 @@ export const navigationItemSeeds = [
   },
 ] as const;
 
+export const partnerLogoMediaSeeds = partnerBrandLogos.map((logo) => ({
+  id: logo.id,
+  blobUrl: logo.src,
+  blobPathname: logo.blobPathname,
+  mimeType: logo.mimeType,
+  width: logo.width,
+  height: logo.height,
+  altBg: logo.altBg,
+  altEn: logo.altEn,
+}));
+
 export const partnerSeeds = [
   {
     id: "partner-narodnichitalishta",
     name: "Фондация „Народни читалища“",
-    mediaId: null,
+    mediaId: "media-partner-nc-logo",
     url: "https://narodnichitalishta.bg/",
     sortOrder: 0,
     visible: true,
@@ -149,7 +159,7 @@ export const partnerSeeds = [
   {
     id: "partner-encc",
     name: "European Network of Cultural Centres (ENCC)",
-    mediaId: null,
+    mediaId: "media-partner-encc-logo",
     url: null,
     sortOrder: 10,
     visible: true,
@@ -157,7 +167,7 @@ export const partnerSeeds = [
   {
     id: "partner-sofia",
     name: "Столична община",
-    mediaId: null,
+    mediaId: "media-partner-sofia-logo",
     url: null,
     sortOrder: 20,
     visible: true,
@@ -165,7 +175,7 @@ export const partnerSeeds = [
   {
     id: "partner-european-parliament",
     name: "Бюро за връзка на Европейския парламент в България",
-    mediaId: null,
+    mediaId: "media-partner-european-parliament-logo",
     url: null,
     sortOrder: 30,
     visible: true,

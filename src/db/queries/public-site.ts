@@ -1,6 +1,7 @@
 import "server-only";
 
 import { asc, eq } from "drizzle-orm";
+import { unstable_cache } from "next/cache";
 import { getDb } from "@/db";
 import {
   contentSections,
@@ -12,6 +13,7 @@ import {
   schedulePanels,
   siteSettings,
 } from "@/db/schema";
+import { PUBLIC_SITE_CACHE_TAG } from "@/lib/cache";
 import type { ScheduleItemStatus, ScheduleItemType } from "@/lib/datetime";
 import type { Locale } from "@/lib/i18n";
 
@@ -130,9 +132,7 @@ function richTextParagraphs(value: unknown): string[] {
   });
 }
 
-export async function getPublicSiteData(
-  locale: Locale,
-): Promise<PublicSiteData> {
+async function queryPublicSiteData(locale: Locale): Promise<PublicSiteData> {
   const db = getDb();
   const [
     settingsRecord,
@@ -332,3 +332,12 @@ export async function getPublicSiteData(
     },
   };
 }
+
+export const getPublicSiteData = unstable_cache(
+  queryPublicSiteData,
+  ["public-site-data"],
+  {
+    revalidate: 60 * 60,
+    tags: [PUBLIC_SITE_CACHE_TAG],
+  },
+);

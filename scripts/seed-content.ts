@@ -1,7 +1,9 @@
 import { config } from "dotenv";
+import { eq } from "drizzle-orm";
 import { getDb } from "../src/db";
 import {
   contentSections,
+  mediaAssets,
   navigationItems,
   partners,
   scheduleDays,
@@ -14,6 +16,7 @@ import {
 import {
   contentSectionSeeds,
   navigationItemSeeds,
+  partnerLogoMediaSeeds,
   partnerSeeds,
   scheduleDaySeeds,
   scheduleItemSeeds,
@@ -100,6 +103,50 @@ async function main() {
     .values(speakerLinks)
     .onConflictDoNothing()
     .returning({ itemId: scheduleItemSpeakers.itemId });
+
+  const heroSeed = contentSectionSeeds.find((section) => section.slug === "hero");
+  if (heroSeed) {
+    await db
+      .update(contentSections)
+      .set({
+        headingBg: heroSeed.headingBg,
+        headingEn: heroSeed.headingEn,
+        contentBg: heroSeed.contentBg,
+        contentEn: heroSeed.contentEn,
+        updatedAt: new Date(),
+      })
+      .where(eq(contentSections.id, heroSeed.id));
+  }
+
+  for (const logo of partnerLogoMediaSeeds) {
+    await db
+      .insert(mediaAssets)
+      .values(logo)
+      .onConflictDoNothing();
+    await db
+      .update(mediaAssets)
+      .set({
+        blobUrl: logo.blobUrl,
+        blobPathname: logo.blobPathname,
+        mimeType: logo.mimeType,
+        width: logo.width,
+        height: logo.height,
+        altBg: logo.altBg,
+        altEn: logo.altEn,
+        updatedAt: new Date(),
+      })
+      .where(eq(mediaAssets.id, logo.id));
+  }
+
+  for (const partner of partnerSeeds) {
+    await db
+      .update(partners)
+      .set({
+        mediaId: partner.mediaId,
+        updatedAt: new Date(),
+      })
+      .where(eq(partners.id, partner.id));
+  }
 
   const insertedCount =
     Object.values(inserted).reduce((total, rows) => total + rows.length, 0) +

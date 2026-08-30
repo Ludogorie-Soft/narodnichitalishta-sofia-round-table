@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { BrandLogo } from "./brand-logo";
 import type { PublicSiteData } from "@/db/queries/public-site";
 import type { Locale } from "@/lib/i18n";
@@ -20,6 +21,28 @@ const copy = {
     contact: "Contact",
   },
 } satisfies Record<Locale, Record<string, string>>;
+
+function isExternalHref(href: string) {
+  return /^https?:\/\//i.test(href);
+}
+
+function FooterLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  if (isExternalHref(href)) {
+    return (
+      <a href={href} rel="noopener noreferrer" target="_blank">
+        {children}
+      </a>
+    );
+  }
+
+  return <a href={href}>{children}</a>;
+}
 
 export function PublicFooter({
   locale,

@@ -5,6 +5,7 @@ import { PublicHeader } from "./public-header";
 import { PartnerLogo, SectionHeading } from "./public-ui";
 import { getPublicSiteData } from "@/db/queries/public-site";
 import type { Locale } from "@/lib/i18n";
+import { partnerBrandLogoByPartnerId } from "@/lib/partner-brand-logos";
 
 const copy = {
   bg: {
@@ -20,12 +21,6 @@ const copy = {
     organizersHeading: "За организаторите",
     organizersText:
       "Събитието се финансира от Столична община и се изпълнява по проект „Bridge Makers“ на ENCC, съфинансиран от Европейския съюз. То се реализира с домакинството и подкрепата на Бюрото за връзка на Европейския парламент в България.",
-    logos: {
-      foundation: "Лого на Фондация „Народни читалища“",
-      encc: "Лого на Европейската мрежа на културните центрове (ENCC)",
-      sofia: "Герб на Столична община",
-      parliament: "Лого на Европейския парламент",
-    },
     venueEyebrow: "Място",
     venueHeading: "Място на провеждане",
     map: "Отворете картата",
@@ -43,12 +38,6 @@ const copy = {
     organizersHeading: "About the Organizers",
     organizersText:
       "The event is funded by the Sofia Municipality and is implemented as part of the ENCC’s “Bridge Makers” project, co-funded by the European Union. It is organized with the hosting and support of the European Parliament Liaison Office in Bulgaria.",
-    logos: {
-      foundation: "Narodni Chitalishta Foundation logo",
-      encc: "European Network of Cultural Centres (ENCC) logo",
-      sofia: "Coat of arms of Sofia Municipality",
-      parliament: "European Parliament logo",
-    },
     venueEyebrow: "Venue",
     venueHeading: "Conference venue",
     map: "Open map",
@@ -56,40 +45,40 @@ const copy = {
 } satisfies Record<Locale, Record<string, unknown>>;
 
 function fallbackPartnerImage(id: string, locale: Locale) {
-  const logos = copy[locale].logos;
-  const images = {
-    "partner-narodnichitalishta": {
-      src: "/brand/nc-logo.png",
-      width: 787,
-      height: 200,
-      alt: logos.foundation,
-    },
-    "partner-encc": {
-      src: "/brand/encc-logo.png",
-      width: 1536,
-      height: 922,
-      alt: logos.encc,
-    },
-    "partner-sofia": {
-      src: "/brand/sofia-municipality-crest.jpg",
-      width: 150,
-      height: 170,
-      alt: logos.sofia,
-    },
-    "partner-european-parliament": {
-      src: "/brand/european-parliament-logo.png",
-      width: 1365,
-      height: 1076,
-      alt: logos.parliament,
-    },
+  const brandLogo = partnerBrandLogoByPartnerId(id);
+  if (!brandLogo) return null;
+  const alt = locale === "bg" ? brandLogo.altBg : brandLogo.altEn;
+  return {
+    src: brandLogo.src,
+    width: brandLogo.width,
+    height: brandLogo.height,
+    alt,
   };
-
-  return images[id as keyof typeof images] ?? null;
 }
 
 export async function ConferencePage({ locale }: { locale: Locale }) {
   const text = copy[locale];
   const data = await getPublicSiteData(locale);
+  const hero = data.sections.hero;
+  const heroContent = hero
+    ? (() => {
+        const isLegacyHeading =
+          hero.heading === "МЕЖДУНАРОДНА КОНФЕРЕНЦИЯ" ||
+          hero.heading === "INTERNATIONAL CONFERENCE";
+        if (isLegacyHeading && hero.paragraphs.length >= 2) {
+          return {
+            title: hero.paragraphs[0] ?? "",
+            subtitle: hero.paragraphs[1] ?? "",
+            contentLocale: hero.contentLocale,
+          };
+        }
+        return {
+          title: hero.heading ?? "",
+          subtitle: hero.paragraphs[0] ?? "",
+          contentLocale: hero.contentLocale,
+        };
+      })()
+    : undefined;
   const introduction = data.sections.introduction;
   const organizers = data.sections.organizers;
   const funding = data.sections.funding;
@@ -112,7 +101,7 @@ export async function ConferencePage({ locale }: { locale: Locale }) {
       </a>
       <PublicHeader locale={locale} navigation={data.navigation} />
       <main id="main-content">
-        <ConferenceHero locale={locale} />
+        <ConferenceHero hero={heroContent} locale={locale} />
 
         <section
           className="scroll-mt-28 px-5 py-20 sm:px-8 sm:py-28"

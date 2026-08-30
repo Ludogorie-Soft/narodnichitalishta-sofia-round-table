@@ -10,7 +10,7 @@ export default async function MediaPage() {
   return (
     <main className="flex flex-col gap-8">
       <div>
-        <h1 className="text-2xl font-semibold">Media</h1>
+        <h1 className="text-2xl font-semibold">Изображения</h1>
         <p className="mt-2 text-sm text-neutral-600">
           Public conference images stored in Vercel Blob. Meaningful images
           require alt text in both languages.

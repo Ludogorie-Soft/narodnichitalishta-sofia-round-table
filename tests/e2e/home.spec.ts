@@ -67,6 +67,16 @@ test("English program identifies untranslated source entries", async ({
   ).toHaveAttribute("lang", "bg");
 });
 
+test("day navigation works from the keyboard", async ({ page }) => {
+  await page.goto("/#program");
+  const dayTwoLink = page.getByRole("link", { name: "Ден 2", exact: true });
+
+  await dayTwoLink.focus();
+  await expect(dayTwoLink).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/#program-day-day-2026-09-19$/);
+});
+
 test("mobile navigation exposes the section links", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 720 });
   await page.goto("/");
