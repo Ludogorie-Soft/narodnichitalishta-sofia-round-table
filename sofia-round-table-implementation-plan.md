@@ -62,11 +62,11 @@ Policy note: Vercel currently describes Hobby as a free plan for personal, non-c
 
 ## 4. URL and language design
 
-- [ ] Serve Bulgarian at `/`.
-- [ ] Serve English at `/en`.
-- [ ] Use identical anchors on both pages: `#home`, `#about`, `#program`, `#organizers`, and `#venue` when venue content is published.
-- [ ] Add an always-visible BG/EN language switcher that preserves the current section anchor.
-- [ ] Set the correct document `lang` value for each language.
+- [x] Serve Bulgarian at `/`.
+- [x] Serve English at `/en`.
+- [x] Use identical anchors on both pages: `#home`, `#about`, `#program`, `#organizers`, and `#venue` when venue content is published.
+- [x] Add an always-visible BG/EN language switcher that preserves the current section anchor.
+- [x] Set the correct document `lang` value for each language.
 - [ ] Add canonical and `hreflang` metadata for Bulgarian and English.
 - [ ] Redirect `/about-us` and `/about-us/` permanently to `/#about`.
 - [ ] Redirect `/schedule` and `/schedule/` permanently to `/#program`.
@@ -177,13 +177,13 @@ docs/
 
 ### Current visual assets to migrate
 
-- [ ] Migrate the Народни читалища logo from the current header/footer.
-- [ ] Migrate the current Bridge Makers conference hero artwork.
-- [ ] Migrate the ENCC logo.
-- [ ] Migrate the Sofia municipality crest.
-- [ ] Migrate the European Parliament logo.
-- [ ] Migrate any remaining partner/funder marks visible in the hero artwork or organizer section.
-- [ ] Create descriptive Bulgarian and English alt text for meaningful images.
+- [x] Migrate the Народни читалища logo from the current header/footer.
+- [x] Migrate the current Bridge Makers conference hero artwork.
+- [x] Migrate the ENCC logo.
+- [x] Migrate the Sofia municipality crest.
+- [x] Migrate the European Parliament logo.
+- [x] Migrate any remaining partner/funder marks visible in the hero artwork or organizer section.
+- [x] Create descriptive Bulgarian and English alt text for meaningful images.
 - [ ] Use empty alt text for purely decorative duplicate marks.
 
 ## 8. Phase 1 — Project foundation
@@ -271,32 +271,34 @@ docs/
 
 - [ ] Self-host Wix Madefor Display and Wix Madefor Text, including Cyrillic subsets and licenses.
 - [ ] Use Wix Madefor Display for headings and Wix Madefor Text for body content.
-- [ ] Define tokens for white, near-black `#333333`, conference dark green, conference pink, restrained orange, muted gray, borders, focus ring, spacing, radii, and shadows.
-- [ ] Sample exact green, pink, and orange values from approved source artwork instead of estimating them.
-- [ ] Preserve the black Народни читалища branding and current clean white presentation.
-- [ ] Preserve generous whitespace but remove the excessive vertical gaps on the current pages.
-- [ ] Use a centered content width suitable for long Bulgarian and English text.
-- [ ] Build a sticky header with the NGO logo, section links, external ecosystem links, and BG/EN switcher.
-- [ ] Collapse navigation to an accessible mobile menu.
-- [ ] Keep the conference hero artwork prominent and responsive.
-- [ ] Add textual date and Sofia location near the hero so critical information is not image-only.
-- [ ] Build reusable section-heading, partner-logo, status-badge, and callout components.
-- [ ] Normalize partner-logo visual size without distorting aspect ratios.
-- [ ] Build a compact footer with NGO summary, social links, copyright, and external links.
-- [ ] Add visible keyboard focus styles.
-- [ ] Respect reduced-motion preferences.
+- [x] Define tokens for white, near-black `#333333`, conference dark green, conference pink, muted gray, borders, focus ring, spacing, radii, and shadows.
+- [ ] Add the restrained orange token after an approved source color is supplied.
+- [x] Sample the exact green and pink values from the approved source artwork instead of estimating them.
+- [ ] Sample the exact orange value after approved source artwork containing orange is supplied.
+- [x] Preserve the black Народни читалища branding and current clean white presentation.
+- [x] Preserve generous whitespace but remove the excessive vertical gaps on the current pages.
+- [x] Use a centered content width suitable for long Bulgarian and English text.
+- [x] Build a sticky header with the NGO logo, section links, external ecosystem links, and BG/EN switcher.
+- [x] Collapse navigation to an accessible mobile menu.
+- [x] Keep the conference hero artwork prominent and responsive.
+- [x] Add textual date and Sofia location near the hero so critical information is not image-only.
+- [x] Build reusable section-heading, partner-logo, status-badge, and callout components.
+- [x] Normalize partner-logo visual size without distorting aspect ratios.
+- [x] Build a compact footer with NGO summary, social links, copyright, and external links.
+- [x] Add visible keyboard focus styles.
+- [x] Respect reduced-motion preferences.
 
 ## 14. Phase 7 — Public sections
 
-- [ ] Build the Hero section with event name, theme, dates, Sofia, and optional venue/address.
-- [ ] Build the Introduction section from current homepage content.
+- [x] Build the Hero section with event name, theme, dates, Sofia, and optional venue/address.
+- [x] Build the Introduction section from current homepage content.
 - [ ] Build the About/Organizers section with ENCC, Фондация „Народни читалища“, Sofia municipality, European Parliament, and funding context.
 - [ ] Build the Program section from structured schedule data.
 - [ ] Build the Partners/Funders section from editable partner records.
 - [ ] Build the Venue section so it can be hidden until venue data is entered.
 - [ ] Build the Footer from editable settings and navigation records.
-- [ ] Ensure hidden or incomplete sections leave no empty whitespace or broken navigation links.
-- [ ] Ensure anchor links land below the sticky header.
+- [x] Ensure hidden or incomplete sections leave no empty whitespace or broken navigation links.
+- [x] Ensure anchor links land below the sticky header.
 
 ## 15. Phase 8 — Schedule experience
 

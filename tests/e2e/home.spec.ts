@@ -4,16 +4,54 @@ test("Bulgarian home renders conference title", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("lang", "bg");
   await expect(
-    page.getByRole("heading", { name: "Международна конференция" }),
+    page.getByRole("heading", {
+      name: "Културата като катализатор за местно и регионално развитие",
+    }),
+  ).toBeVisible();
+  await expect(page.locator("#about")).toBeAttached();
+  await expect(page.locator("#program")).toBeAttached();
+  await expect(page.locator("#organizers")).toBeAttached();
+});
+
+test("hero fits within a 13-inch laptop viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 1366, height: 768 });
+  await page.goto("/");
+  const hero = await page.locator("#home").boundingBox();
+
+  expect(hero).not.toBeNull();
+  expect(hero!.y + hero!.height).toBeLessThanOrEqual(768);
+});
+
+test("language switcher preserves the current section", async ({ page }) => {
+  await page.goto("/#program");
+  await expect(page).toHaveURL(/#program$/);
+  const languageLink = page.getByRole("link", {
+    name: "View this section in English",
+  });
+  await expect(languageLink).toHaveAttribute("href", "/en#program");
+  await languageLink.click();
+  await expect(page).toHaveURL(/\/en\/?#program$/);
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  await expect(
+    page.getByRole("heading", {
+      name: "Culture as a Catalyst for Local and Regional Development",
+    }),
   ).toBeVisible();
 });
 
-test("English home is reachable from the language link", async ({ page }) => {
+test("mobile navigation exposes the section links", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 720 });
   await page.goto("/");
-  await page.getByRole("link", { name: "English" }).click();
-  await expect(page).toHaveURL(/\/en\/?$/);
-  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  await page.getByText("Меню", { exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "International conference" }),
+    page.getByRole("navigation", { name: "Меню" }).last(),
   ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Програма" }).last(),
+  ).toBeVisible();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBe(true);
 });

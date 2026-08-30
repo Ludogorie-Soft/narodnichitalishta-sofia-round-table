@@ -11,8 +11,7 @@ export function BrandLogo({ alt }: BrandLogoProps) {
       alt={alt}
       width={787}
       height={200}
-      className="h-12 w-auto max-w-full object-contain"
-      style={{ width: "auto", height: "3rem" }}
+      className="h-8 w-auto max-w-full object-contain sm:h-12"
       priority
     />
   );
