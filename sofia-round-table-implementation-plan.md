@@ -255,17 +255,17 @@ docs/
 
 ## 12. Phase 5 — Seed and migrate content
 
-- [ ] Build an idempotent seed script; running it twice must not duplicate records.
-- [ ] Seed event title, subtitle, dates, Sofia, timezone, hero, about text, organizers, funders, footer, and social links from the current site.
-- [ ] Seed both language fields only with approved copy.
+- [x] Build an idempotent seed script; running it twice must not duplicate records.
+- [x] Seed event title, subtitle, dates, Sofia, timezone, hero, about text, organizers, funders, footer, and social links from the current site.
+- [x] Seed both language fields only with approved copy.
 - [ ] If English copy is not approved, mark it incomplete in admin and do not silently publish machine-generated translations.
-- [ ] Map the supplied Word schedule into seed data during development; do not build a production import feature.
-- [ ] Seed Day 1, Day 2, all three panels, opening items, breaks, lunch, visits, closing, and every timed item.
-- [ ] Normalize repeated speakers where appropriate.
-- [ ] Preserve confirmation status as structured data.
+- [x] Map the supplied Word schedule into seed data during development; do not build a production import feature.
+- [x] Seed Day 1, Day 2, all three panels, opening items, breaks, lunch, visits, closing, and every timed item.
+- [x] Normalize repeated speakers where appropriate.
+- [x] Preserve confirmation status as structured data.
 - [ ] Compare the seeded Bulgarian program line by line with the Word source.
-- [ ] Verify chronological order and detect overlaps.
-- [ ] Add a development-only report for missing translations, invalid times, and orphaned relations.
+- [x] Verify chronological order and detect overlaps.
+- [x] Add a development-only report for missing translations, invalid times, and orphaned relations.
 
 ## 13. Phase 6 — Public visual system
 

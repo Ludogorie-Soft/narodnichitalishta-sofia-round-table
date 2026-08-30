@@ -1,5 +1,6 @@
 import {
   boolean,
+  check,
   date,
   index,
   integer,
@@ -8,6 +9,7 @@ import {
   text,
   time,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { timestamps } from "./columns";
 import { scheduleItemStatusEnum, scheduleItemTypeEnum } from "./enums";
 
@@ -62,8 +64,8 @@ export const scheduleItems = pgTable(
     panelId: text("panel_id").references(() => schedulePanels.id, {
       onDelete: "set null",
     }),
-    startTime: time("start_time").notNull(),
-    endTime: time("end_time").notNull(),
+    startTime: time("start_time"),
+    endTime: time("end_time"),
     itemType: scheduleItemTypeEnum("item_type").notNull(),
     titleBg: text("title_bg").notNull(),
     titleEn: text("title_en").notNull(),
@@ -81,6 +83,10 @@ export const scheduleItems = pgTable(
       table.visible,
       table.dayId,
       table.sortOrder,
+    ),
+    check(
+      "schedule_items_time_order_chk",
+      sql`${table.endTime} is null or (${table.startTime} is not null and ${table.endTime} >= ${table.startTime})`,
     ),
   ],
 );

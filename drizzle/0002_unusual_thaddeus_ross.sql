@@ -1,0 +1,3 @@
+ALTER TABLE "schedule_items" ALTER COLUMN "start_time" DROP NOT NULL;--> statement-breakpoint
+ALTER TABLE "schedule_items" ALTER COLUMN "end_time" DROP NOT NULL;--> statement-breakpoint
+ALTER TABLE "schedule_items" ADD CONSTRAINT "schedule_items_time_order_chk" CHECK ("schedule_items"."end_time" is null or ("schedule_items"."start_time" is not null and "schedule_items"."end_time" >= "schedule_items"."start_time"));

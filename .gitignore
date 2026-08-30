@@ -44,6 +44,7 @@ next-env.d.ts
 
 # database dumps and local uploads (not persistent on Vercel)
 *.sql
+!/drizzle/*.sql
 *.sql.gz
 *.dump
 /dumps/

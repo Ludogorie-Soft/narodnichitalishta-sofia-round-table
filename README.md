@@ -70,7 +70,11 @@ Neon Free-plan limits and scale-to-zero behavior are documented in `docs/operati
 
 ## Seeding
 
-`npm run db:seed` will load approved Bulgarian and English copy plus the Word schedule. Running it twice must not duplicate records. Implemented in Phase 5.
+`npm run db:seed` loads approved Bulgarian copy, the available temporary
+English draft, and the structured Word schedule. Missing English fields remain
+empty and are reported as translation warnings. Stable record IDs and
+conflict-safe inserts make repeat runs idempotent without overwriting later
+administrator edits.
 
 ## Media storage
 

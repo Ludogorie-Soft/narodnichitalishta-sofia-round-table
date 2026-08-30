@@ -15,6 +15,13 @@
       "when": 1788117848960,
       "tag": "0001_account_issuer",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788119325941,
+      "tag": "0002_unusual_thaddeus_ross",
+      "breakpoints": true
     }
   ]
 }
