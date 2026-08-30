@@ -53,10 +53,10 @@ Policy note: Vercel currently describes Hobby as a free plan for personal, non-c
 - [x] Keep all database, authentication, mutation, and secret-handling code server-only.
 - [x] Use the Node.js runtime for authenticated admin and mutation routes.
 - [x] Use the Neon serverless driver through Drizzle.
-- [ ] Never store image bytes in PostgreSQL.
-- [ ] Never write uploads to the Vercel application filesystem because it is not persistent.
+- [x] Never store image bytes in PostgreSQL.
+- [x] Never write uploads to the Vercel application filesystem because it is not persistent.
 - [ ] Use Server Components for public content and Client Components only where interaction requires them.
-- [ ] Use server actions or route handlers for mutations, with session checks and Zod validation inside every mutation.
+- [x] Use server actions or route handlers for mutations, with session checks and Zod validation inside every mutation.
 - [ ] Revalidate the public-site cache immediately after a successful content change.
 - [x] Keep production schema changes in committed, reviewable migration files; do not use schema push against production.
 
@@ -241,16 +241,16 @@ docs/
 
 - [ ] Create a public Vercel Blob store for public site images.
 - [ ] Configure Blob credentials separately in Preview and Production.
-- [ ] Implement authenticated uploads through a protected server route or signed client-upload flow.
-- [ ] Accept JPEG, PNG, WebP, and AVIF for administrator uploads.
-- [ ] Reject SVG uploads unless a separate sanitization pipeline is implemented.
-- [ ] Enforce a conservative file-size limit and document it in the admin UI.
-- [ ] Validate file signatures and MIME types server-side rather than trusting extensions.
-- [ ] Require Bulgarian and English alt text before a meaningful image can be published.
-- [ ] Store image metadata only after Blob upload succeeds.
-- [ ] Prevent deletion of a Blob still referenced by content or partners.
-- [ ] Require explicit confirmation before deleting an unused media asset.
-- [ ] Use responsive image optimization while preserving crisp logo rendering.
+- [x] Implement authenticated uploads through a protected server route or signed client-upload flow.
+- [x] Accept JPEG, PNG, WebP, and AVIF for administrator uploads.
+- [x] Reject SVG uploads unless a separate sanitization pipeline is implemented.
+- [x] Enforce a conservative file-size limit and document it in the admin UI.
+- [x] Validate file signatures and MIME types server-side rather than trusting extensions.
+- [x] Require Bulgarian and English alt text before a meaningful image can be published.
+- [x] Store image metadata only after Blob upload succeeds.
+- [x] Prevent deletion of a Blob still referenced by content or partners.
+- [x] Require explicit confirmation before deleting an unused media asset.
+- [x] Use responsive image optimization while preserving crisp logo rendering.
 - [ ] Monitor Blob usage against the selected Vercel plan limits.
 
 ## 12. Phase 5 — Seed and migrate content

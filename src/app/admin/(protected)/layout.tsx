@@ -29,6 +29,9 @@ export default async function ProtectedAdminLayout({
             <Link className="underline underline-offset-4" href="/admin/users">
               Потребители
             </Link>
+            <Link className="underline underline-offset-4" href="/admin/media">
+              Медии
+            </Link>
             <Link
               className="underline underline-offset-4"
               href="/admin/account"

@@ -72,6 +72,18 @@ Neon Free-plan limits and scale-to-zero behavior are documented in `docs/operati
 
 `npm run db:seed` will load approved Bulgarian and English copy plus the Word schedule. Running it twice must not duplicate records. Implemented in Phase 5.
 
+## Media storage
+
+Administrator uploads use the public Vercel Blob store configured by
+`BLOB_READ_WRITE_TOKEN`. The Media screen accepts JPEG, PNG, WebP, and AVIF
+files up to 4 MB, verifies their binary signatures, and requires Bulgarian and
+English alt text unless the image is marked decorative. PostgreSQL stores only
+the resulting Blob URL and image metadata.
+
+Create and connect the Blob store before testing uploads locally or in a Vercel
+environment. Blob credentials must be configured separately for Preview and
+Production.
+
 ## Creating administrators
 
 There is no public registration. After `.env.local` has `DATABASE_URL` and `BETTER_AUTH_SECRET`, run:
