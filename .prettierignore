@@ -1,0 +1,13 @@
+.next
+node_modules
+coverage
+playwright-report
+test-results
+package-lock.json
+*.docx
+docs
+public/brand
+sofia-round-table-implementation-plan.md
+AGENTS.md
+CLAUDE.md
+
