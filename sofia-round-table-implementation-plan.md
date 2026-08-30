@@ -67,12 +67,12 @@ Policy note: Vercel currently describes Hobby as a free plan for personal, non-c
 - [x] Use identical anchors on both pages: `#home`, `#about`, `#program`, `#organizers`, and `#venue` when venue content is published.
 - [x] Add an always-visible BG/EN language switcher that preserves the current section anchor.
 - [x] Set the correct document `lang` value for each language.
-- [ ] Add canonical and `hreflang` metadata for Bulgarian and English.
-- [ ] Redirect `/about-us` and `/about-us/` permanently to `/#about`.
-- [ ] Redirect `/schedule` and `/schedule/` permanently to `/#program`.
-- [ ] Verify that legacy paths return permanent redirects without loops.
-- [ ] Keep `/admin` and all admin child routes out of search results.
-- [ ] Keep `/api/auth/*` reserved for Better Auth.
+- [x] Add canonical and `hreflang` metadata for Bulgarian and English.
+- [x] Redirect `/about-us` and `/about-us/` permanently to `/#about`.
+- [x] Redirect `/schedule` and `/schedule/` permanently to `/#program`.
+- [x] Verify that legacy paths return permanent redirects without loops.
+- [x] Keep `/admin` and all admin child routes out of search results.
+- [x] Keep `/api/auth/*` reserved for Better Auth.
 
 ## 5. Target repository structure
 
@@ -344,18 +344,18 @@ docs/
 
 ## 17. Phase 10 — Internationalization, SEO, and accessibility
 
-- [ ] Keep UI translations in typed locale dictionaries.
-- [ ] Keep administrator-entered Bulgarian and English content in explicit database fields.
-- [ ] Add language-specific title and description metadata.
-- [ ] Add Open Graph metadata with an approved conference image.
-- [ ] Generate `robots.txt` and `sitemap.xml` through Next.js metadata files.
-- [ ] Add Event JSON-LD with name, dates, Sofia, organizer, image, language, and venue only when known.
-- [ ] Validate Event JSON-LD after venue information is published.
-- [ ] Exclude `/admin` and authentication routes from indexing.
-- [ ] Add landmarks and a working skip link.
-- [ ] Keep heading levels logical and sequential.
-- [ ] Meet WCAG AA contrast for text, badges, controls, and focus states.
-- [ ] Add labels and error associations to every admin control.
+- [x] Keep UI translations in typed locale dictionaries.
+- [x] Keep administrator-entered Bulgarian and English content in explicit database fields.
+- [x] Add language-specific title and description metadata.
+- [x] Add Open Graph metadata with an approved conference image.
+- [x] Generate `robots.txt` and `sitemap.xml` through Next.js metadata files.
+- [x] Add Event JSON-LD with name, dates, Sofia, organizer, image, language, and venue only when known.
+- [x] Validate Event JSON-LD after venue information is published.
+- [x] Exclude `/admin` and authentication routes from indexing.
+- [x] Add landmarks and a working skip link.
+- [x] Keep heading levels logical and sequential.
+- [x] Meet WCAG AA contrast for text, badges, controls, and focus states.
+- [x] Add labels and error associations to every admin control.
 
 ## 18. Phase 11 — Security and integrity
 

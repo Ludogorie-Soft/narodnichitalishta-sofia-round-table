@@ -1,48 +1,16 @@
 import { ConferenceHero } from "./conference-hero";
+import { EventJsonLd } from "./event-json-ld";
 import { ProgramSchedule } from "./program-schedule";
 import { PublicFooter } from "./public-footer";
 import { PublicHeader } from "./public-header";
 import { PartnerLogo, SectionHeading } from "./public-ui";
+import { SkipLink } from "@/components/ui/skip-link";
 import { getPublicSiteData } from "@/db/queries/public-site";
+import { getDictionary } from "@/lib/dictionaries";
 import type { Locale } from "@/lib/i18n";
+import { publicPathForLocale } from "@/lib/i18n";
 import { partnerBrandLogoByPartnerId } from "@/lib/partner-brand-logos";
-
-const copy = {
-  bg: {
-    skip: "Към основното съдържание",
-    aboutEyebrow: "Bridge Makers · София",
-    aboutHeading: "Въведение",
-    aboutParagraphs: [
-      "Българските читалища навършват 170 години. Огромна мрежа от 3597 читалища, 80% от които в селските райони, която крие огромен потенциал — точно този потенциал, който „Културният компас за Европа“ на ЕС ни призовава да разгърнем: културата като двигател на сближаване, устойчивост и конкурентоспособност във всяка територия, не само в столиците. Докато българските градове подготвят своите кандидатури за Европейска столица на културата 2032, истинският въпрос е дали селските и периферните общности ще бъдат част от тази история — а именно читалищата са мястото, където тази култура се изгражда отдолу-нагоре, всеки ден. Тази кръгла маса събира евродепутати, кметове, представители на читалища, национални и местни власти, ENCC и експерти по Европейска столица на културата, за да постави местната култура отново в центъра на териториалната амбиция на Европа. Тя е трета от поредица от шест кръгли маси по програма „Bridge Makers“ на ENCC, след срещи в Чехия и Италия, като предстои и издание в Гърция.",
-    ],
-    programEyebrow: "18 септември · Ден 1",
-    programHeading: "Дневен ред",
-    organizersEyebrow: "Партньорство",
-    organizersHeading: "За организаторите",
-    organizersText:
-      "Събитието се финансира от Столична община и се изпълнява по проект „Bridge Makers“ на ENCC, съфинансиран от Европейския съюз. То се реализира с домакинството и подкрепата на Бюрото за връзка на Европейския парламент в България.",
-    venueEyebrow: "Място",
-    venueHeading: "Място на провеждане",
-    map: "Отворете картата",
-  },
-  en: {
-    skip: "Skip to main content",
-    aboutEyebrow: "Bridge Makers · Sofia",
-    aboutHeading: "Introduction",
-    aboutParagraphs: [
-      "Bulgarian community centers are celebrating their 170th anniversary. A vast network of 3,597 community centers, 80% of which are in rural areas, holds immense potential—precisely the potential that the EU’s “Cultural Compass for Europe” calls on us to unleash: culture as a driver of cohesion, sustainability, and competitiveness in every region, not just in the capitals. While Bulgarian cities are preparing their bids for the European Capital of Culture 2032, the real question is whether rural and peripheral communities will be part of this story—and it is precisely the community centers where this culture is built from the ground up, every day. This roundtable brings together Members of the European Parliament, mayors, representatives of community centers, national and local authorities, the ENCC, and experts on the European Capital of Culture to put local culture back at the center of Europe’s territorial ambition. It is the third in a series of six roundtables under the ENCC’s “Bridge Makers” program, following meetings in the Czech Republic and Italy, with an upcoming event in Greece.",
-    ],
-    programEyebrow: "18 September · Day 1",
-    programHeading: "Agenda",
-    organizersEyebrow: "Partnership",
-    organizersHeading: "About the Organizers",
-    organizersText:
-      "The event is funded by the Sofia Municipality and is implemented as part of the ENCC’s “Bridge Makers” project, co-funded by the European Union. It is organized with the hosting and support of the European Parliament Liaison Office in Bulgaria.",
-    venueEyebrow: "Venue",
-    venueHeading: "Conference venue",
-    map: "Open map",
-  },
-} satisfies Record<Locale, Record<string, unknown>>;
+import { absoluteUrl, buildEventJsonLd, CONFERENCE_OG_IMAGE } from "@/lib/seo";
 
 function fallbackPartnerImage(id: string, locale: Locale) {
   const brandLogo = partnerBrandLogoByPartnerId(id);
@@ -57,7 +25,7 @@ function fallbackPartnerImage(id: string, locale: Locale) {
 }
 
 export async function ConferencePage({ locale }: { locale: Locale }) {
-  const text = copy[locale];
+  const text = getDictionary(locale);
   const data = await getPublicSiteData(locale);
   const hero = data.sections.hero;
   const heroContent = hero
@@ -85,22 +53,35 @@ export async function ConferencePage({ locale }: { locale: Locale }) {
   const introductionParagraphs =
     introduction && introduction.paragraphs.length > 0
       ? introduction.paragraphs
-      : text.aboutParagraphs;
+      : text.about.paragraphs;
   const organizerParagraphs = [
     ...(organizers?.paragraphs ?? []),
-    ...(funding?.paragraphs ?? [text.organizersText]),
+    ...(funding?.paragraphs ?? [text.organizers.text]),
   ];
+  const eventName = heroContent?.title?.trim() || text.hero.title;
+  const eventDescription = introductionParagraphs[0] ?? text.meta.description;
+  const jsonLd = buildEventJsonLd({
+    locale,
+    name: eventName,
+    description: eventDescription,
+    startDate: data.settings.startDate,
+    endDate: data.settings.endDate,
+    city: data.settings.city,
+    imageUrl: absoluteUrl(CONFERENCE_OG_IMAGE.path),
+    pageUrl: absoluteUrl(publicPathForLocale(locale)),
+    organizerName: text.jsonLd.organizerName,
+    organizerUrl: data.settings.ngoHomeUrl,
+    venuePublished: data.settings.venuePublished,
+    venueName: data.settings.venueName,
+    venueAddress: data.settings.venueAddress,
+  });
 
   return (
     <>
-      <a
-        className="fixed left-4 top-4 z-[100] -translate-y-24 rounded bg-white px-4 py-3 font-semibold text-conference-green shadow-lg transition-transform focus:translate-y-0"
-        href="#main-content"
-      >
-        {text.skip}
-      </a>
+      <EventJsonLd data={jsonLd} />
+      <SkipLink>{text.skip}</SkipLink>
       <PublicHeader locale={locale} navigation={data.navigation} />
-      <main id="main-content">
+      <main id="main-content" tabIndex={-1}>
         <ConferenceHero hero={heroContent} locale={locale} />
 
         <section
@@ -108,8 +89,8 @@ export async function ConferencePage({ locale }: { locale: Locale }) {
           id="about"
         >
           <div className="mx-auto w-full max-w-6xl">
-            <SectionHeading eyebrow={text.aboutEyebrow}>
-              {introduction?.heading || text.aboutHeading}
+            <SectionHeading eyebrow={text.about.eyebrow}>
+              {introduction?.heading || text.about.heading}
             </SectionHeading>
             <div
               className="mt-8 max-w-4xl space-y-6 text-lg leading-relaxed text-neutral-700"
@@ -127,8 +108,8 @@ export async function ConferencePage({ locale }: { locale: Locale }) {
           id="program"
         >
           <div className="mx-auto w-full max-w-6xl">
-            <SectionHeading eyebrow={text.programEyebrow}>
-              {text.programHeading}
+            <SectionHeading eyebrow={text.program.eyebrow}>
+              {text.program.heading}
             </SectionHeading>
             <ProgramSchedule
               days={data.schedule}
@@ -143,8 +124,8 @@ export async function ConferencePage({ locale }: { locale: Locale }) {
           id="organizers"
         >
           <div className="mx-auto w-full max-w-6xl">
-            <SectionHeading eyebrow={text.organizersEyebrow}>
-              {organizers?.heading || text.organizersHeading}
+            <SectionHeading eyebrow={text.organizers.eyebrow}>
+              {organizers?.heading || text.organizers.heading}
             </SectionHeading>
             <div
               className="mt-8 max-w-4xl space-y-6 text-lg leading-relaxed text-neutral-700"
@@ -196,8 +177,8 @@ export async function ConferencePage({ locale }: { locale: Locale }) {
             id="venue"
           >
             <div className="mx-auto w-full max-w-6xl">
-              <SectionHeading eyebrow={text.venueEyebrow}>
-                {text.venueHeading}
+              <SectionHeading eyebrow={text.venue.eyebrow}>
+                {text.venue.heading}
               </SectionHeading>
               <div className="mt-8 text-lg leading-relaxed">
                 {data.settings.venueName ? (
@@ -212,7 +193,7 @@ export async function ConferencePage({ locale }: { locale: Locale }) {
                       className="font-semibold text-conference-green underline underline-offset-4"
                       href={data.settings.mapUrl}
                     >
-                      {text.map}
+                      {text.venue.map}
                     </a>
                   </p>
                 ) : null}

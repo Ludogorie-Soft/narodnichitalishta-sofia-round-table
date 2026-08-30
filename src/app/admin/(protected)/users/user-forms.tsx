@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { AdminField, AdminFormStatus } from "@/components/admin/form-controls";
 import {
   createAdministratorAction,
   setTemporaryPasswordAction,
@@ -23,44 +24,46 @@ export function CreateUserForm() {
   );
 
   return (
-    <form action={action} className="flex max-w-md flex-col gap-3">
+    <form
+      action={action}
+      aria-describedby={state.error ? "create-user-error" : undefined}
+      className="flex max-w-md flex-col gap-3"
+    >
       <h2 className="text-lg font-semibold">Нов администратор</h2>
-      <label className="flex flex-col gap-1 text-sm">
-        Имейл
-        <input
-          name="email"
-          type="email"
-          required
-          className="rounded border border-neutral-300 px-3 py-2"
-        />
-      </label>
-      <label className="flex flex-col gap-1 text-sm">
-        Име
-        <input
-          name="name"
-          type="text"
-          required
-          className="rounded border border-neutral-300 px-3 py-2"
-        />
-      </label>
-      <label className="flex flex-col gap-1 text-sm">
-        Парола (минимум 12 символа)
-        <input
-          name="password"
-          type="password"
-          minLength={12}
-          required
-          className="rounded border border-neutral-300 px-3 py-2"
-        />
-      </label>
-      {state.error ? (
-        <p role="alert" className="text-sm text-red-700">
-          {state.error}
-        </p>
-      ) : null}
-      {state.success ? (
-        <p className="text-sm text-green-800">{state.success}</p>
-      ) : null}
+      <AdminField
+        describedById={state.error ? "create-user-error" : undefined}
+        error={state.error}
+        id="create-email"
+        label="Имейл"
+        name="email"
+        required
+        type="email"
+      />
+      <AdminField
+        describedById={state.error ? "create-user-error" : undefined}
+        error={state.error}
+        id="create-name"
+        label="Име"
+        name="name"
+        required
+        type="text"
+      />
+      <AdminField
+        describedById={state.error ? "create-user-error" : undefined}
+        error={state.error}
+        hint="Минимум 12 символа."
+        id="create-password"
+        label="Парола"
+        minLength={12}
+        name="password"
+        required
+        type="password"
+      />
+      <AdminFormStatus
+        id="create-user"
+        error={state.error}
+        success={state.success}
+      />
       <button
         type="submit"
         disabled={pending}
@@ -84,6 +87,9 @@ export function UserRowActions({
     {} as FormMessage,
   );
   const isSelf = person.id === currentUserId;
+  const confirmId = `confirm-email-${person.id}`;
+  const tempPasswordId = `temp-password-${person.id}`;
+  const passwordStatusId = `temp-password-status-${person.id}`;
 
   return (
     <div className="flex flex-col gap-3 text-sm">
@@ -98,41 +104,45 @@ export function UserRowActions({
           value={person.active ? "false" : "true"}
         />
         {isSelf && person.active ? (
-          <label className="flex flex-col gap-1">
-            Потвърдете имейла си, за да деактивирате собствения акаунт
-            <input
-              name="confirmEmail"
-              type="email"
-              required
-              className="rounded border border-neutral-300 px-3 py-2"
-            />
-          </label>
+          <AdminField
+            id={confirmId}
+            label="Потвърдете имейла си, за да деактивирате собствения акаунт"
+            name="confirmEmail"
+            required
+            type="email"
+          />
         ) : null}
         <button type="submit" className="w-fit underline underline-offset-4">
           {person.active ? "Деактивирай" : "Активирай"}
         </button>
       </form>
 
-      <form action={passwordAction} className="flex flex-col gap-2">
+      <form
+        action={passwordAction}
+        aria-describedby={
+          passwordState.error ? `${passwordStatusId}-error` : undefined
+        }
+        className="flex flex-col gap-2"
+      >
         <input type="hidden" name="userId" value={person.id} />
-        <label className="flex flex-col gap-1">
-          Временна парола
-          <input
-            name="password"
-            type="password"
-            minLength={12}
-            required
-            className="rounded border border-neutral-300 px-3 py-2"
-          />
-        </label>
-        {passwordState.error ? (
-          <p role="alert" className="text-red-700">
-            {passwordState.error}
-          </p>
-        ) : null}
-        {passwordState.success ? (
-          <p className="text-green-800">{passwordState.success}</p>
-        ) : null}
+        <AdminField
+          describedById={
+            passwordState.error ? `${passwordStatusId}-error` : undefined
+          }
+          error={passwordState.error}
+          hint="Минимум 12 символа."
+          id={tempPasswordId}
+          label="Временна парола"
+          minLength={12}
+          name="password"
+          required
+          type="password"
+        />
+        <AdminFormStatus
+          id={passwordStatusId}
+          error={passwordState.error}
+          success={passwordState.success}
+        />
         <button
           type="submit"
           disabled={passwordPending}

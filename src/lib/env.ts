@@ -8,12 +8,16 @@ export function getAuthSecret(): string {
   return secret;
 }
 
+export function getSiteUrl(): string {
+  const raw =
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+    process.env.BETTER_AUTH_URL?.trim() ||
+    "http://localhost:3000";
+  return raw.replace(/\/$/, "");
+}
+
 export function getAuthUrl(): string {
-  return (
-    process.env.BETTER_AUTH_URL?.replace(/\/$/, "") ??
-    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
-    "http://localhost:3000"
-  );
+  return process.env.BETTER_AUTH_URL?.replace(/\/$/, "") ?? getSiteUrl();
 }
 
 export function getTrustedOrigins(): string[] {
@@ -24,7 +28,7 @@ export function getTrustedOrigins(): string[] {
     getAuthUrl(),
   ]);
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
+  const siteUrl = getSiteUrl();
   if (siteUrl) {
     origins.add(siteUrl);
   }

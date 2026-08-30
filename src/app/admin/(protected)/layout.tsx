@@ -20,7 +20,7 @@ export default async function ProtectedAdminLayout({
           <p className="font-display text-xl font-semibold">
             Sofia Round Table
           </p>
-          <p className="mt-1 text-xs tracking-wide text-white/65 uppercase">
+          <p className="mt-1 text-xs tracking-wide text-white uppercase">
             Администрация
           </p>
         </div>
@@ -34,12 +34,12 @@ export default async function ProtectedAdminLayout({
             {process.env.NODE_ENV}
           </span>
           <Link
-            className="block text-white/80 underline underline-offset-4 hover:text-white"
+            className="block text-white underline underline-offset-4 hover:text-white"
             href="/"
           >
             Към публичния сайт
           </Link>
-          <SignOutButton className="text-white/80 hover:text-white" />
+          <SignOutButton className="text-white hover:text-white" />
         </div>
       </aside>
 

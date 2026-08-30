@@ -15,7 +15,7 @@ import {
 } from "@/db/schema";
 import { PUBLIC_SITE_CACHE_TAG } from "@/lib/cache";
 import type { ScheduleItemStatus, ScheduleItemType } from "@/lib/datetime";
-import type { Locale } from "@/lib/i18n";
+import { pickLocalized, type Locale } from "@/lib/i18n";
 
 type PublicSpeaker = {
   id: string;
@@ -82,6 +82,9 @@ export type PublicSiteData = {
   schedule: PublicScheduleDay[];
   settings: {
     timezone: string;
+    startDate: string;
+    endDate: string;
+    city: string;
     venuePublished: boolean;
     venueName: string | null;
     venueAddress: string | null;
@@ -97,17 +100,6 @@ export type PublicSiteData = {
     dataUrl: string | null;
   };
 };
-
-function localized(
-  locale: Locale,
-  bg: string | null,
-  en: string | null,
-): { value: string | null; contentLocale: Locale } {
-  if (locale === "en" && en?.trim()) {
-    return { value: en, contentLocale: "en" };
-  }
-  return { value: bg?.trim() || null, contentLocale: "bg" };
-}
 
 function richTextParagraphs(value: unknown): string[] {
   if (!value || typeof value !== "object" || !("content" in value)) {
@@ -185,7 +177,11 @@ async function queryPublicSiteData(locale: Locale): Promise<PublicSiteData> {
 
   const sections = Object.fromEntries(
     sectionRecords.map((section) => {
-      const heading = localized(locale, section.headingBg, section.headingEn);
+      const heading = pickLocalized(
+        locale,
+        section.headingBg,
+        section.headingEn,
+      );
       const content =
         locale === "en" && section.contentEn
           ? {
@@ -211,8 +207,8 @@ async function queryPublicSiteData(locale: Locale): Promise<PublicSiteData> {
   const mapItem = (
     item: (typeof days)[number]["items"][number],
   ): PublicScheduleItem => {
-    const title = localized(locale, item.titleBg, item.titleEn);
-    const description = localized(
+    const title = pickLocalized(locale, item.titleBg, item.titleEn);
+    const description = pickLocalized(
       locale,
       item.descriptionBg,
       item.descriptionEn,
@@ -230,8 +226,8 @@ async function queryPublicSiteData(locale: Locale): Promise<PublicSiteData> {
       contentLocale: title.contentLocale,
       sortOrder: item.sortOrder,
       speakers: item.speakers.map(({ speaker }) => {
-        const name = localized(locale, speaker.nameBg, speaker.nameEn);
-        const affiliation = localized(
+        const name = pickLocalized(locale, speaker.nameBg, speaker.nameEn);
+        const affiliation = pickLocalized(
           locale,
           speaker.affiliationBg,
           speaker.affiliationEn,
@@ -268,8 +264,8 @@ async function queryPublicSiteData(locale: Locale): Promise<PublicSiteData> {
         : null,
     })),
     schedule: days.map((day) => {
-      const title = localized(locale, day.titleBg, day.titleEn);
-      const subtitle = localized(locale, day.subtitleBg, day.subtitleEn);
+      const title = pickLocalized(locale, day.titleBg, day.titleEn);
+      const subtitle = pickLocalized(locale, day.subtitleBg, day.subtitleEn);
       const items = day.items.map(mapItem);
 
       return {
@@ -280,8 +276,12 @@ async function queryPublicSiteData(locale: Locale): Promise<PublicSiteData> {
         contentLocale: title.contentLocale,
         sortOrder: day.sortOrder,
         panels: day.panels.map((panel) => {
-          const panelTitle = localized(locale, panel.titleBg, panel.titleEn);
-          const panelDescription = localized(
+          const panelTitle = pickLocalized(
+            locale,
+            panel.titleBg,
+            panel.titleEn,
+          );
+          const panelDescription = pickLocalized(
             locale,
             panel.descriptionBg,
             panel.descriptionEn,
@@ -302,13 +302,18 @@ async function queryPublicSiteData(locale: Locale): Promise<PublicSiteData> {
     }),
     settings: {
       timezone: settingsRecord.timezone,
+      startDate: settingsRecord.startDate,
+      endDate: settingsRecord.endDate,
+      city:
+        pickLocalized(locale, settingsRecord.cityBg, settingsRecord.cityEn)
+          .value ?? (locale === "en" ? "Sofia" : "София"),
       venuePublished: settingsRecord.venuePublished,
-      venueName: localized(
+      venueName: pickLocalized(
         locale,
         settingsRecord.venueNameBg,
         settingsRecord.venueNameEn,
       ).value,
-      venueAddress: localized(
+      venueAddress: pickLocalized(
         locale,
         settingsRecord.venueAddressBg,
         settingsRecord.venueAddressEn,

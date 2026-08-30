@@ -7,7 +7,7 @@ export default async function PartnersPage() {
   const data = await getAdminPartnersData();
 
   return (
-    <main className="space-y-8">
+    <main className="space-y-8" id="main-content" tabIndex={-1}>
       <div>
         <h1 className="font-display text-3xl font-semibold">Партньори</h1>
         <p className="mt-2 text-neutral-600">

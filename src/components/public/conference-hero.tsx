@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { getDictionary } from "@/lib/dictionaries";
 import type { Locale } from "@/lib/i18n";
 
 type HeroContent = {
@@ -7,24 +8,6 @@ type HeroContent = {
   contentLocale?: Locale;
 };
 
-const copy = {
-  bg: {
-    title: "Културата като катализатор за местно и регионално развитие",
-    subtitle:
-      "От локални партньорства към по-широко европейско измерение.",
-    date: "18–19 септември 2026",
-    city: "София",
-    alt: "Банер на международната конференция Bridge makers, трета кръгла маса в София, 18–19 септември 2026",
-  },
-  en: {
-    title: "Culture as a Catalyst for Local and Regional Development",
-    subtitle: "From Local Partnerships to a Broader European Dimension.",
-    date: "18–19 September 2026",
-    city: "Sofia",
-    alt: "Banner for the Bridge makers international conference, third round table in Sofia, 18–19 September 2026",
-  },
-} satisfies Record<Locale, Record<string, string>>;
-
 export function ConferenceHero({
   locale,
   hero,
@@ -32,7 +15,7 @@ export function ConferenceHero({
   locale: Locale;
   hero?: HeroContent;
 }) {
-  const text = copy[locale];
+  const text = getDictionary(locale).hero;
   const title = hero?.title?.trim() || text.title;
   const subtitle = hero?.subtitle?.trim() || text.subtitle;
   const textLocale = hero?.contentLocale ?? locale;
@@ -58,7 +41,7 @@ export function ConferenceHero({
           <h1 className="font-display text-2xl leading-tight font-semibold text-balance sm:text-3xl lg:text-4xl">
             {title}
           </h1>
-          <p className="mt-2 text-base leading-relaxed text-white/80 sm:text-lg">
+          <p className="mt-2 text-base leading-relaxed text-white sm:text-lg">
             {subtitle}
           </p>
           <p className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-base font-bold sm:text-lg">

@@ -8,7 +8,7 @@ export default async function MediaPage() {
   const assets = await listMediaAssets();
 
   return (
-    <main className="flex flex-col gap-8">
+    <main className="flex flex-col gap-8" id="main-content" tabIndex={-1}>
       <div>
         <h1 className="text-2xl font-semibold">Изображения</h1>
         <p className="mt-2 text-sm text-neutral-600">

@@ -7,7 +7,7 @@ export default async function UsersPage() {
   const people = await listAdministrators();
 
   return (
-    <main className="flex flex-col gap-10">
+    <main className="flex flex-col gap-10" id="main-content" tabIndex={-1}>
       <div>
         <h1 className="text-2xl font-semibold">Потребители</h1>
         <p className="mt-2 text-sm text-neutral-600">

@@ -50,6 +50,7 @@ export function MediaUploadForm() {
     <form
       ref={formRef}
       action={submit}
+      aria-describedby={state.error ? "media-upload-error" : undefined}
       className="grid gap-4 rounded-lg border border-neutral-200 p-5"
     >
       <div>
@@ -57,6 +58,13 @@ export function MediaUploadForm() {
           Image
         </label>
         <input
+          aria-describedby={[
+            "media-file-hint",
+            state.error ? "media-upload-error" : null,
+          ]
+            .filter(Boolean)
+            .join(" ")}
+          aria-invalid={state.error ? true : undefined}
           className="mt-1 block w-full text-sm"
           id="media-file"
           name="file"
@@ -64,7 +72,7 @@ export function MediaUploadForm() {
           accept="image/jpeg,image/png,image/webp,image/avif"
           required
         />
-        <p className="mt-1 text-xs text-neutral-600">
+        <p className="mt-1 text-xs text-neutral-600" id="media-file-hint">
           JPEG, PNG, WebP, or AVIF. Maximum {MAX_MEDIA_FILE_SIZE_LABEL}.
         </p>
       </div>
@@ -87,6 +95,8 @@ export function MediaUploadForm() {
             Bulgarian alt text
           </label>
           <input
+            aria-describedby={state.error ? "media-upload-error" : undefined}
+            aria-invalid={state.error ? true : undefined}
             className="mt-1 w-full rounded border border-neutral-300 px-3 py-2 disabled:bg-neutral-100"
             id="media-alt-bg"
             name="altBg"
@@ -100,6 +110,8 @@ export function MediaUploadForm() {
             English alt text
           </label>
           <input
+            aria-describedby={state.error ? "media-upload-error" : undefined}
+            aria-invalid={state.error ? true : undefined}
             className="mt-1 w-full rounded border border-neutral-300 px-3 py-2 disabled:bg-neutral-100"
             id="media-alt-en"
             name="altEn"
@@ -111,7 +123,11 @@ export function MediaUploadForm() {
       </div>
 
       {state.error ? (
-        <p className="text-sm text-red-700" role="alert">
+        <p
+          className="text-sm text-red-700"
+          id="media-upload-error"
+          role="alert"
+        >
           {state.error}
         </p>
       ) : null}
@@ -147,13 +163,26 @@ export function DeleteMediaForm({
   );
 
   return (
-    <form action={action} className="mt-4 grid gap-2 border-t pt-4">
+    <form
+      action={action}
+      aria-describedby={state.error ? `delete-media-${id}-error` : undefined}
+      className="mt-4 grid gap-2 border-t pt-4"
+    >
       <input type="hidden" name="id" value={id} />
       <label className="text-xs" htmlFor={`confirmation-${id}`}>
         Type DELETE to confirm
       </label>
       <div className="flex flex-wrap gap-2">
         <input
+          aria-describedby={
+            [
+              disabled ? `delete-media-${id}-hint` : null,
+              state.error ? `delete-media-${id}-error` : null,
+            ]
+              .filter(Boolean)
+              .join(" ") || undefined
+          }
+          aria-invalid={state.error ? true : undefined}
           className="min-w-0 flex-1 rounded border border-neutral-300 px-2 py-1 text-sm"
           id={`confirmation-${id}`}
           name="confirmation"
@@ -169,12 +198,16 @@ export function DeleteMediaForm({
         </button>
       </div>
       {disabled ? (
-        <p className="text-xs text-neutral-600">
+        <p className="text-xs text-neutral-600" id={`delete-media-${id}-hint`}>
           Remove all partner references before deletion.
         </p>
       ) : null}
       {state.error ? (
-        <p className="text-xs text-red-700" role="alert">
+        <p
+          className="text-xs text-red-700"
+          id={`delete-media-${id}-error`}
+          role="alert"
+        >
           {state.error}
         </p>
       ) : null}

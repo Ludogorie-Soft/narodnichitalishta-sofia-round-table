@@ -5,22 +5,8 @@ import type {
   PublicSchedulePanel,
 } from "@/db/queries/public-site";
 import { formatConferenceDate } from "@/lib/datetime";
+import { getDictionary } from "@/lib/dictionaries";
 import type { Locale } from "@/lib/i18n";
-
-const labels = {
-  bg: {
-    chooseDay: "Изберете ден",
-    timezone: "Местно време",
-    noTime: "Без точен час",
-    translationPending: "Преводът предстои",
-  },
-  en: {
-    chooseDay: "Choose a day",
-    timezone: "Local time",
-    noTime: "Time to be confirmed",
-    translationPending: "English translation pending",
-  },
-} satisfies Record<Locale, Record<string, string>>;
 
 function timeToMinutes(time: string | null): number {
   if (!time) {
@@ -32,7 +18,7 @@ function timeToMinutes(time: string | null): number {
 
 function formatTime(item: PublicScheduleItem, locale: Locale): string {
   if (!item.startTime) {
-    return labels[locale].noTime;
+    return getDictionary(locale).program.noTime;
   }
   return item.endTime
     ? `${item.startTime.slice(0, 5)}–${item.endTime.slice(0, 5)}`
@@ -82,8 +68,8 @@ function ScheduleItem({
         </div>
 
         {locale === "en" && item.contentLocale === "bg" ? (
-          <p className="mt-1 text-xs font-semibold text-amber-800">
-            {labels.en.translationPending}
+          <p className="mt-1 text-xs font-semibold text-amber-900">
+            {getDictionary(locale).program.translationPending}
           </p>
         ) : null}
 
@@ -131,7 +117,7 @@ function SchedulePanel({
       className="overflow-hidden rounded-2xl border border-conference-green/15 bg-white shadow-lg shadow-conference-green/5"
     >
       <header className="bg-conference-green px-5 py-5 text-white sm:px-7">
-        <p className="text-sm font-bold tracking-wide text-white/75 tabular-nums">
+        <p className="text-sm font-bold tracking-wide text-white tabular-nums">
           {panel.startTime.slice(0, 5)}–{panel.endTime.slice(0, 5)}
         </p>
         <h4
@@ -142,8 +128,8 @@ function SchedulePanel({
           {panel.title}
         </h4>
         {locale === "en" && panel.contentLocale === "bg" ? (
-          <p className="mt-2 text-xs font-semibold text-white/80">
-            {labels.en.translationPending}
+          <p className="mt-2 text-xs font-semibold text-white">
+            {getDictionary(locale).program.translationPending}
           </p>
         ) : null}
       </header>
@@ -170,7 +156,7 @@ export function ProgramSchedule({
   locale: Locale;
   timezone: string;
 }) {
-  const text = labels[locale];
+  const text = getDictionary(locale).program;
 
   return (
     <div className="mt-10">
@@ -181,7 +167,7 @@ export function ProgramSchedule({
             href={`#program-day-${day.id}`}
             key={day.id}
           >
-            {day.title || `${locale === "bg" ? "Ден" : "Day"} ${index + 1}`}
+            {day.title || `${text.dayPrefix} ${index + 1}`}
           </a>
         ))}
       </nav>
@@ -216,8 +202,7 @@ export function ProgramSchedule({
             >
               <div className="border-b-2 border-conference-green pb-5">
                 <p className="text-sm font-bold tracking-[0.14em] text-conference-green uppercase">
-                  {day.title ||
-                    `${locale === "bg" ? "Ден" : "Day"} ${dayIndex + 1}`}
+                  {day.title || `${text.dayPrefix} ${dayIndex + 1}`}
                 </p>
                 <h3
                   className="font-display mt-2 text-2xl font-semibold sm:text-3xl"

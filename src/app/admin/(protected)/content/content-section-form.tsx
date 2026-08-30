@@ -2,6 +2,11 @@
 
 import Link from "next/link";
 import { useActionState, useRef, useState } from "react";
+import {
+  AdminField,
+  AdminFormStatus,
+  AdminTextarea,
+} from "@/components/admin/form-controls";
 import type { AdminContentSection } from "@/lib/admin-content";
 import { saveContentSectionAction, type SaveContentResult } from "./actions";
 
@@ -11,9 +16,6 @@ const publicAnchors: Record<string, string> = {
   organizers: "organizers",
   funding: "organizers",
 };
-
-const inputClassName =
-  "mt-1 w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-conference-green focus:outline-none focus:ring-2 focus:ring-conference-green/20";
 
 export function ContentSectionForm({
   section,
@@ -42,6 +44,7 @@ export function ContentSectionForm({
   return (
     <form
       action={action}
+      aria-describedby={state.error ? `${section.id}-error` : undefined}
       className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm sm:p-6"
       ref={formRef}
     >
@@ -49,7 +52,7 @@ export function ContentSectionForm({
 
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-semibold tracking-wide text-neutral-500 uppercase">
+          <p className="text-xs font-semibold tracking-wide text-muted uppercase">
             {section.slug}
           </p>
           <h2 className="font-display mt-1 text-xl font-semibold">
@@ -79,50 +82,46 @@ export function ContentSectionForm({
           <legend className="mb-3 rounded-full bg-neutral-100 px-3 py-1 text-sm font-bold">
             Български
           </legend>
-          <label className="block text-sm font-semibold">
-            Заглавие
-            <input
-              className={inputClassName}
-              defaultValue={section.headingBg}
-              maxLength={200}
-              name="headingBg"
-              type="text"
-            />
-          </label>
-          <label className="block text-sm font-semibold">
-            Текст
-            <textarea
-              className={`${inputClassName} min-h-52 resize-y leading-relaxed`}
-              defaultValue={section.bodyBg}
-              maxLength={30_000}
-              name="bodyBg"
-            />
-          </label>
+          <AdminField
+            describedById={state.error ? `${section.id}-error` : undefined}
+            defaultValue={section.headingBg}
+            error={state.error}
+            id={`${section.id}-heading-bg`}
+            label="Заглавие"
+            maxLength={200}
+            name="headingBg"
+          />
+          <AdminTextarea
+            defaultValue={section.bodyBg}
+            id={`${section.id}-body-bg`}
+            label="Текст"
+            maxLength={30_000}
+            minHeightClassName="min-h-52"
+            name="bodyBg"
+          />
         </fieldset>
 
         <fieldset className="min-w-0 space-y-4">
           <legend className="mb-3 rounded-full bg-neutral-100 px-3 py-1 text-sm font-bold">
             English
           </legend>
-          <label className="block text-sm font-semibold">
-            Heading
-            <input
-              className={inputClassName}
-              defaultValue={section.headingEn}
-              maxLength={200}
-              name="headingEn"
-              type="text"
-            />
-          </label>
-          <label className="block text-sm font-semibold">
-            Text
-            <textarea
-              className={`${inputClassName} min-h-52 resize-y leading-relaxed`}
-              defaultValue={section.bodyEn}
-              maxLength={30_000}
-              name="bodyEn"
-            />
-          </label>
+          <AdminField
+            describedById={state.error ? `${section.id}-error` : undefined}
+            defaultValue={section.headingEn}
+            error={state.error}
+            id={`${section.id}-heading-en`}
+            label="Heading"
+            maxLength={200}
+            name="headingEn"
+          />
+          <AdminTextarea
+            defaultValue={section.bodyEn}
+            id={`${section.id}-body-en`}
+            label="Text"
+            maxLength={30_000}
+            minHeightClassName="min-h-52"
+            name="bodyEn"
+          />
         </fieldset>
       </div>
 
@@ -180,16 +179,11 @@ export function ContentSectionForm({
         </button>
       </div>
 
-      {state.error ? (
-        <p className="mt-4 text-sm font-semibold text-red-700" role="alert">
-          {state.error}
-        </p>
-      ) : null}
-      {state.success ? (
-        <p className="mt-4 text-sm font-semibold text-green-800" role="status">
-          {state.success}
-        </p>
-      ) : null}
+      <AdminFormStatus
+        id={section.id}
+        error={state.error}
+        success={state.success}
+      />
     </form>
   );
 }

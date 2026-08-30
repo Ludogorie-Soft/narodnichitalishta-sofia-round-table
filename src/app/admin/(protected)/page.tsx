@@ -12,7 +12,7 @@ export default async function AdminDashboardPage() {
   });
 
   return (
-    <main className="flex flex-col gap-8">
+    <main className="flex flex-col gap-8" id="main-content" tabIndex={-1}>
       <div>
         <p className="text-sm font-semibold text-conference-green">
           Здравейте, {session.user.name}
@@ -108,7 +108,7 @@ export default async function AdminDashboardPage() {
           {dashboard.translationWarnings.length +
             dashboard.scheduleWarnings.length >
           8 ? (
-            <p className="mt-4 text-xs text-neutral-500">
+            <p className="mt-4 text-xs text-muted">
               Показани са първите 8 предупреждения.
             </p>
           ) : null}
@@ -133,7 +133,7 @@ export default async function AdminDashboardPage() {
               {dashboard.recentActivity.map((entry) => (
                 <li className="py-3 first:pt-0" key={entry.id}>
                   <p className="text-sm">{entry.summary}</p>
-                  <p className="mt-1 text-xs text-neutral-500">
+                  <p className="mt-1 text-xs text-muted">
                     {entry.actorName ?? "Система"} ·{" "}
                     {dateFormatter.format(entry.createdAt)}
                   </p>

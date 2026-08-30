@@ -9,7 +9,11 @@ export default async function AdminLoginPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-full w-full max-w-md flex-col justify-center gap-6 px-6 py-16">
+    <main
+      className="mx-auto flex min-h-full w-full max-w-md flex-col justify-center gap-6 px-6 py-16"
+      id="main-content"
+      tabIndex={-1}
+    >
       <h1 className="text-2xl font-semibold">Администрация</h1>
       <p className="text-sm text-neutral-600">
         Вход само за съществуващи администратори. Няма публична регистрация.

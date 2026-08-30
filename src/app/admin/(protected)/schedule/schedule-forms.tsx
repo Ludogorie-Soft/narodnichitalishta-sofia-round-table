@@ -89,21 +89,25 @@ function useFormPreview() {
   return { formRef, preview, showPreview };
 }
 
-function Messages({ state }: { state: ScheduleFormState }) {
+function Messages({ id, state }: { id: string; state: ScheduleFormState }) {
   return (
     <>
       {state.error ? (
-        <p className="text-sm text-red-700" role="alert">
+        <p className="text-sm text-red-700" id={`${id}-error`} role="alert">
           {state.error}
         </p>
       ) : null}
       {state.success ? (
-        <p className="text-sm text-green-800" role="status">
+        <p
+          className="text-sm text-green-800"
+          id={`${id}-success`}
+          role="status"
+        >
           {state.success}
         </p>
       ) : null}
       {state.warnings?.map((warning) => (
-        <p className="text-xs text-amber-800" key={warning}>
+        <p className="text-xs text-amber-900" key={warning}>
           {warning}
         </p>
       ))}
@@ -141,10 +145,12 @@ function Preview({ values }: { values: Record<string, string> | null }) {
 }
 
 function SaveBar({
+  id,
   pending,
   state,
   onPreview,
 }: {
+  id: string;
   pending: boolean;
   state: ScheduleFormState;
   onPreview: () => void;
@@ -164,7 +170,7 @@ function SaveBar({
       >
         {pending ? "Запазване…" : "Запази и публикувай"}
       </button>
-      <Messages state={state} />
+      <Messages id={id} state={state} />
     </div>
   );
 }
@@ -211,11 +217,25 @@ export function DeleteControl({
     {} as ScheduleFormState,
   );
   return (
-    <form action={action} className="flex flex-wrap items-center gap-2">
+    <form
+      action={action}
+      aria-describedby={
+        state.error ? `delete-${entity}-${id}-error` : undefined
+      }
+      className="flex flex-wrap items-center gap-2"
+    >
       <input name="entity" type="hidden" value={entity} />
       <input name="id" type="hidden" value={id} />
+      <label className="text-xs" htmlFor={`delete-${entity}-${id}`}>
+        Потвърждение
+      </label>
       <input
+        aria-describedby={
+          state.error ? `delete-${entity}-${id}-error` : undefined
+        }
+        aria-invalid={state.error ? true : undefined}
         className="w-24 rounded border px-2 py-1 text-xs"
+        id={`delete-${entity}-${id}`}
         name="confirmation"
         placeholder="DELETE"
         required
@@ -226,7 +246,7 @@ export function DeleteControl({
       >
         Изтрий
       </button>
-      <Messages state={state} />
+      <Messages id={`delete-${entity}-${id}`} state={state} />
     </form>
   );
 }
@@ -238,7 +258,12 @@ export function DayForm({ day }: { day?: Day }) {
   );
   const { formRef, preview, showPreview } = useFormPreview();
   return (
-    <form action={action} className="space-y-4" ref={formRef}>
+    <form
+      action={action}
+      aria-describedby={state.error ? "day-form-error" : undefined}
+      className="space-y-4"
+      ref={formRef}
+    >
       <input name="id" type="hidden" value={day?.id ?? ""} />
       <div className="grid gap-4 sm:grid-cols-3">
         <label className="text-sm font-semibold">
@@ -295,7 +320,12 @@ export function DayForm({ day }: { day?: Day }) {
         Видим
       </label>
       <Preview values={preview} />
-      <SaveBar pending={pending} state={state} onPreview={showPreview} />
+      <SaveBar
+        id="day-form"
+        pending={pending}
+        state={state}
+        onPreview={showPreview}
+      />
     </form>
   );
 }
@@ -313,7 +343,12 @@ export function PanelForm({
   );
   const { formRef, preview, showPreview } = useFormPreview();
   return (
-    <form action={action} className="space-y-4" ref={formRef}>
+    <form
+      action={action}
+      aria-describedby={state.error ? "panel-form-error" : undefined}
+      className="space-y-4"
+      ref={formRef}
+    >
       <input name="id" type="hidden" value={panel?.id ?? ""} />
       <div className="grid gap-4 sm:grid-cols-3">
         <label className="text-sm font-semibold">
@@ -361,7 +396,12 @@ export function PanelForm({
         Видим
       </label>
       <Preview values={preview} />
-      <SaveBar pending={pending} state={state} onPreview={showPreview} />
+      <SaveBar
+        id="panel-form"
+        pending={pending}
+        state={state}
+        onPreview={showPreview}
+      />
     </form>
   );
 }
@@ -454,7 +494,12 @@ export function ItemForm({
       ])
     : [];
   return (
-    <form action={action} className="space-y-4" ref={formRef}>
+    <form
+      action={action}
+      aria-describedby={state.error ? "item-form-error" : undefined}
+      className="space-y-4"
+      ref={formRef}
+    >
       <input name="id" type="hidden" value={item?.id ?? ""} />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <label className="text-sm font-semibold">
@@ -589,7 +634,12 @@ export function ItemForm({
           ))}
         </div>
       ) : null}
-      <SaveBar pending={pending} state={state} onPreview={showPreview} />
+      <SaveBar
+        id="item-form"
+        pending={pending}
+        state={state}
+        onPreview={showPreview}
+      />
     </form>
   );
 }
@@ -601,7 +651,12 @@ export function SpeakerForm({ speaker }: { speaker?: Speaker }) {
   );
   const { formRef, preview, showPreview } = useFormPreview();
   return (
-    <form action={action} className="space-y-4" ref={formRef}>
+    <form
+      action={action}
+      aria-describedby={state.error ? "speaker-form-error" : undefined}
+      className="space-y-4"
+      ref={formRef}
+    >
       <input name="id" type="hidden" value={speaker?.id ?? ""} />
       <div className="grid gap-4 lg:grid-cols-2">
         {(["Bg", "En"] as const).map((locale) => (
@@ -629,7 +684,12 @@ export function SpeakerForm({ speaker }: { speaker?: Speaker }) {
         ))}
       </div>
       <Preview values={preview} />
-      <SaveBar pending={pending} state={state} onPreview={showPreview} />
+      <SaveBar
+        id="speaker-form"
+        pending={pending}
+        state={state}
+        onPreview={showPreview}
+      />
     </form>
   );
 }

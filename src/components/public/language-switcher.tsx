@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { getDictionary } from "@/lib/dictionaries";
 import type { Locale } from "@/lib/i18n";
 
 function subscribeToHash(callback: () => void) {
@@ -9,12 +10,10 @@ function subscribeToHash(callback: () => void) {
 }
 
 export function LanguageSwitcher({ locale }: { locale: Locale }) {
+  const copy = getDictionary(locale).language;
   const target = locale === "bg" ? "/en" : "/";
-  const label = locale === "bg" ? "EN" : "BG";
-  const accessibleLabel =
-    locale === "bg"
-      ? "View this section in English"
-      : "Вижте раздела на български";
+  const label = copy.short;
+  const accessibleLabel = copy.switchTo;
   const hash = useSyncExternalStore(
     subscribeToHash,
     () => window.location.hash,

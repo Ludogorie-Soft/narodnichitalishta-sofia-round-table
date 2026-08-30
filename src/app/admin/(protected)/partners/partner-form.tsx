@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useActionState, useRef, useState } from "react";
+import { AdminField, AdminFormStatus } from "@/components/admin/form-controls";
 import type { AdminMediaChoice } from "@/lib/admin-partners";
 import { partnerBrandLogoByPartnerId } from "@/lib/partner-brand-logos";
 import {
@@ -18,9 +19,6 @@ type Partner = {
   url: string | null;
   visible: boolean;
 };
-
-const fieldClass =
-  "mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm";
 
 function resolveSelectedMedia(
   mediaId: string | null | undefined,
@@ -85,6 +83,7 @@ export function PartnerForm({
     media,
     partner?.id,
   );
+  const formId = partner?.id ?? "new-partner";
 
   function showPreview() {
     if (!formRef.current) return;
@@ -98,28 +97,33 @@ export function PartnerForm({
 
   return (
     <article className="rounded-2xl border border-neutral-200 bg-white p-5">
-      <form action={saveAction} className="space-y-4" ref={formRef}>
+      <form
+        action={saveAction}
+        aria-describedby={saveState.error ? `${formId}-error` : undefined}
+        className="space-y-4"
+        ref={formRef}
+      >
         <input name="id" type="hidden" value={partner?.id ?? ""} />
         <div className="grid gap-4 lg:grid-cols-2">
-          <label className="block text-sm font-semibold">
-            Име
-            <input
-              className={fieldClass}
-              defaultValue={partner?.name ?? ""}
-              maxLength={300}
-              name="name"
-              required
-            />
-          </label>
-          <label className="block text-sm font-semibold">
-            Интернет адрес
-            <input
-              className={fieldClass}
-              defaultValue={partner?.url ?? ""}
-              name="url"
-              type="url"
-            />
-          </label>
+          <AdminField
+            describedById={saveState.error ? `${formId}-error` : undefined}
+            defaultValue={partner?.name ?? ""}
+            error={saveState.error}
+            id={`${formId}-name`}
+            label="Име"
+            maxLength={300}
+            name="name"
+            required
+          />
+          <AdminField
+            describedById={saveState.error ? `${formId}-error` : undefined}
+            defaultValue={partner?.url ?? ""}
+            error={saveState.error}
+            id={`${formId}-url`}
+            label="Интернет адрес"
+            name="url"
+            type="url"
+          />
         </div>
 
         <fieldset>
@@ -156,7 +160,9 @@ export function PartnerForm({
                   src={image.blobUrl}
                   width={image.width ?? 80}
                 />
-                <span className="min-w-0 text-sm leading-snug">{image.label}</span>
+                <span className="min-w-0 text-sm leading-snug">
+                  {image.label}
+                </span>
               </label>
             ))}
           </div>
@@ -172,7 +178,8 @@ export function PartnerForm({
               width={selectedMedia.width ?? 112}
             />
             <p className="text-sm text-neutral-600">
-              Текущо лого: <span className="font-semibold">{selectedMedia.label}</span>
+              Текущо лого:{" "}
+              <span className="font-semibold">{selectedMedia.label}</span>
             </p>
           </div>
         ) : null}
@@ -224,16 +231,11 @@ export function PartnerForm({
           >
             {savePending ? "Запазване…" : "Запази и публикувай"}
           </button>
-          {saveState.error ? (
-            <p className="text-sm text-red-700" role="alert">
-              {saveState.error}
-            </p>
-          ) : null}
-          {saveState.success ? (
-            <p className="text-sm text-green-800" role="status">
-              {saveState.success}
-            </p>
-          ) : null}
+          <AdminFormStatus
+            id={formId}
+            error={saveState.error}
+            success={saveState.success}
+          />
         </div>
       </form>
 
@@ -263,18 +265,26 @@ export function PartnerForm({
           </form>
           <form
             action={deleteAction}
+            aria-describedby={
+              deleteState.error ? `${formId}-delete-error` : undefined
+            }
             className="ml-auto flex flex-wrap items-center gap-2"
           >
             <input name="id" type="hidden" value={partner.id} />
-            <label className="text-xs">
+            <label className="text-xs" htmlFor={`${formId}-delete-confirm`}>
               Потвърждение
-              <input
-                className="ml-2 w-24 rounded border px-2 py-1"
-                name="confirmation"
-                placeholder="DELETE"
-                required
-              />
             </label>
+            <input
+              aria-describedby={
+                deleteState.error ? `${formId}-delete-error` : undefined
+              }
+              aria-invalid={deleteState.error ? true : undefined}
+              className="w-24 rounded border px-2 py-1"
+              id={`${formId}-delete-confirm`}
+              name="confirmation"
+              placeholder="DELETE"
+              required
+            />
             <button
               className="text-sm font-semibold text-red-700 underline"
               disabled={deletePending}
@@ -283,7 +293,11 @@ export function PartnerForm({
               Изтрий
             </button>
             {deleteState.error ? (
-              <p className="w-full text-xs text-red-700" role="alert">
+              <p
+                className="w-full text-xs text-red-700"
+                id={`${formId}-delete-error`}
+                role="alert"
+              >
                 {deleteState.error}
               </p>
             ) : null}

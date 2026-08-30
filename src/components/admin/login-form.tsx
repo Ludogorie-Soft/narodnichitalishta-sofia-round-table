@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { AdminField, AdminFormStatus } from "@/components/admin/form-controls";
 import { authClient } from "@/lib/auth-client";
 
 export function LoginForm() {
@@ -33,32 +34,32 @@ export function LoginForm() {
   }
 
   return (
-    <form action={onSubmit} className="flex flex-col gap-4">
-      <label className="flex flex-col gap-1 text-sm">
-        Имейл
-        <input
-          name="email"
-          type="email"
-          autoComplete="username"
-          required
-          className="rounded border border-neutral-300 px-3 py-2 text-base focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#333333]"
-        />
-      </label>
-      <label className="flex flex-col gap-1 text-sm">
-        Парола
-        <input
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          required
-          className="rounded border border-neutral-300 px-3 py-2 text-base focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#333333]"
-        />
-      </label>
-      {error ? (
-        <p role="alert" className="text-sm text-red-700">
-          {error}
-        </p>
-      ) : null}
+    <form
+      action={onSubmit}
+      aria-describedby={error ? "login-error" : undefined}
+      className="flex flex-col gap-4"
+    >
+      <AdminField
+        autoComplete="username"
+        describedById={error ? "login-error" : undefined}
+        error={error ?? undefined}
+        id="login-email"
+        label="Имейл"
+        name="email"
+        required
+        type="email"
+      />
+      <AdminField
+        autoComplete="current-password"
+        describedById={error ? "login-error" : undefined}
+        error={error ?? undefined}
+        id="login-password"
+        label="Парола"
+        name="password"
+        required
+        type="password"
+      />
+      <AdminFormStatus id="login" error={error ?? undefined} />
       <button
         type="submit"
         disabled={pending}

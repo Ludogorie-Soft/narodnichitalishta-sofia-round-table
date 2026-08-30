@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import type { ScheduleItemStatus } from "@/lib/datetime";
+import { getStatusLabel } from "@/lib/dictionaries";
 import type { Locale } from "@/lib/i18n";
 
 export function SectionHeading({
@@ -28,23 +29,10 @@ export function SectionHeading({
   );
 }
 
-const statusLabels = {
-  bg: {
-    confirmed: "Потвърдено",
-    to_be_confirmed: "За потвърждение",
-    cancelled: "Отменено",
-  },
-  en: {
-    confirmed: "Confirmed",
-    to_be_confirmed: "To be confirmed",
-    cancelled: "Cancelled",
-  },
-} satisfies Record<Locale, Record<ScheduleItemStatus, string>>;
-
 const statusStyles: Record<ScheduleItemStatus, string> = {
-  confirmed: "bg-emerald-50 text-emerald-800 ring-emerald-700/20",
-  to_be_confirmed: "bg-amber-50 text-amber-900 ring-amber-700/25",
-  cancelled: "bg-red-50 text-red-800 ring-red-700/20",
+  confirmed: "bg-emerald-50 text-emerald-900 ring-emerald-800/25",
+  to_be_confirmed: "bg-amber-50 text-amber-950 ring-amber-800/30",
+  cancelled: "bg-red-50 text-red-900 ring-red-800/25",
 };
 
 export function StatusBadge({
@@ -58,7 +46,7 @@ export function StatusBadge({
     <span
       className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ring-1 ring-inset ${statusStyles[status]}`}
     >
-      {statusLabels[locale][status]}
+      {getStatusLabel(locale, status)}
     </span>
   );
 }

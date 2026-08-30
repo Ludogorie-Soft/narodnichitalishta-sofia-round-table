@@ -14,7 +14,7 @@ export default async function SchedulePage() {
   const data = await getAdminScheduleData();
 
   return (
-    <main className="space-y-10">
+    <main className="space-y-10" id="main-content" tabIndex={-1}>
       <div>
         <h1 className="font-display text-3xl font-semibold">Програма</h1>
         <p className="mt-2 max-w-3xl text-neutral-600">

@@ -1,6 +1,11 @@
 "use client";
 
 import { useActionState, useRef, useState } from "react";
+import {
+  AdminField,
+  AdminFormStatus,
+  AdminTextarea,
+} from "@/components/admin/form-controls";
 import { saveGeneralSettingsAction, type GeneralFormState } from "./actions";
 
 type Settings = {
@@ -29,36 +34,6 @@ type Settings = {
   englishPublished: boolean;
 };
 
-const fieldClass =
-  "mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-conference-green focus:outline-none focus:ring-2 focus:ring-conference-green/20";
-
-function Field({
-  label,
-  name,
-  value,
-  type = "text",
-  required = false,
-}: {
-  label: string;
-  name: string;
-  value: string | null;
-  type?: string;
-  required?: boolean;
-}) {
-  return (
-    <label className="block text-sm font-semibold">
-      {label}
-      <input
-        className={fieldClass}
-        defaultValue={value ?? ""}
-        name={name}
-        required={required}
-        type={type}
-      />
-    </label>
-  );
-}
-
 export function GeneralForm({ settings }: { settings: Settings }) {
   const [state, action, pending] = useActionState(
     saveGeneralSettingsAction,
@@ -80,52 +55,76 @@ export function GeneralForm({ settings }: { settings: Settings }) {
   }
 
   return (
-    <form action={action} className="space-y-8" ref={formRef}>
+    <form
+      action={action}
+      aria-describedby={state.error ? "general-form-error" : undefined}
+      className="space-y-8"
+      ref={formRef}
+    >
       <section className="rounded-2xl border border-neutral-200 bg-white p-6">
         <h2 className="font-display text-xl font-semibold">Събитие</h2>
         <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Field
+          <AdminField
+            describedById={state.error ? "general-form-error" : undefined}
+            error={state.error}
+            id="startDate"
             label="Начална дата"
             name="startDate"
             required
             type="date"
-            value={settings.startDate}
+            defaultValue={settings.startDate}
           />
-          <Field
+          <AdminField
+            describedById={state.error ? "general-form-error" : undefined}
+            error={state.error}
+            id="endDate"
             label="Крайна дата"
             name="endDate"
             required
             type="date"
-            value={settings.endDate}
+            defaultValue={settings.endDate}
           />
-          <Field
+          <AdminField
+            describedById={state.error ? "general-form-error" : undefined}
+            error={state.error}
+            id="timezone"
             label="Часова зона"
             name="timezone"
             required
-            value={settings.timezone}
+            defaultValue={settings.timezone}
           />
-          <Field
+          <AdminField
+            describedById={state.error ? "general-form-error" : undefined}
+            error={state.error}
+            id="cityBg"
             label="Град (BG)"
             name="cityBg"
             required
-            value={settings.cityBg}
+            defaultValue={settings.cityBg}
           />
-          <Field
+          <AdminField
+            describedById={state.error ? "general-form-error" : undefined}
+            error={state.error}
+            id="cityEn"
             label="City (EN)"
             name="cityEn"
             required
-            value={settings.cityEn}
+            defaultValue={settings.cityEn}
           />
-          <Field
+          <AdminField
+            describedById={state.error ? "general-form-error" : undefined}
+            error={state.error}
+            id="contactEmail"
             label="Контактен имейл"
             name="contactEmail"
             type="email"
-            value={settings.contactEmail}
+            defaultValue={settings.contactEmail}
           />
         </div>
         <label className="mt-5 flex items-center gap-2 text-sm font-semibold">
           <input
             defaultChecked={settings.englishPublished}
+            id="englishPublished"
             name="englishPublished"
             type="checkbox"
           />
@@ -140,42 +139,48 @@ export function GeneralForm({ settings }: { settings: Settings }) {
         <div className="mt-5 grid gap-6 lg:grid-cols-2">
           <fieldset className="space-y-4">
             <legend className="font-bold">Български</legend>
-            <Field
+            <AdminField
+              id="venueNameBg"
               label="Име"
               name="venueNameBg"
-              value={settings.venueNameBg}
+              defaultValue={settings.venueNameBg}
             />
-            <Field
+            <AdminField
+              id="venueAddressBg"
               label="Адрес"
               name="venueAddressBg"
-              value={settings.venueAddressBg}
+              defaultValue={settings.venueAddressBg}
             />
           </fieldset>
           <fieldset className="space-y-4">
             <legend className="font-bold">English</legend>
-            <Field
+            <AdminField
+              id="venueNameEn"
               label="Name"
               name="venueNameEn"
-              value={settings.venueNameEn}
+              defaultValue={settings.venueNameEn}
             />
-            <Field
+            <AdminField
+              id="venueAddressEn"
               label="Address"
               name="venueAddressEn"
-              value={settings.venueAddressEn}
+              defaultValue={settings.venueAddressEn}
             />
           </fieldset>
         </div>
         <div className="mt-5">
-          <Field
+          <AdminField
+            id="mapUrl"
             label="Адрес към карта"
             name="mapUrl"
             type="url"
-            value={settings.mapUrl}
+            defaultValue={settings.mapUrl}
           />
         </div>
         <label className="mt-5 flex items-center gap-2 text-sm font-semibold">
           <input
             defaultChecked={settings.venuePublished}
+            id="venuePublished"
             name="venuePublished"
             type="checkbox"
           />
@@ -202,12 +207,13 @@ export function GeneralForm({ settings }: { settings: Settings }) {
               ["Данни", "dataUrl", settings.dataUrl],
             ] satisfies Array<[string, string, string | null]>
           ).map(([label, name, value]) => (
-            <Field
+            <AdminField
               key={name}
+              id={name}
               label={label}
               name={name}
               type="url"
-              value={value}
+              defaultValue={value}
             />
           ))}
         </div>
@@ -221,18 +227,17 @@ export function GeneralForm({ settings }: { settings: Settings }) {
               <legend className="font-bold">
                 {locale === "Bg" ? "Български" : "English"}
               </legend>
-              <label className="block text-sm font-semibold">
-                Кратък текст
-                <textarea
-                  className={`${fieldClass} min-h-28`}
-                  defaultValue={settings[`footerBlurb${locale}`] ?? ""}
-                  name={`footerBlurb${locale}`}
-                />
-              </label>
-              <Field
+              <AdminTextarea
+                id={`footerBlurb${locale}`}
+                label="Кратък текст"
+                name={`footerBlurb${locale}`}
+                defaultValue={settings[`footerBlurb${locale}`]}
+              />
+              <AdminField
+                id={`copyright${locale}`}
                 label="Copyright"
                 name={`copyright${locale}`}
-                value={settings[`copyright${locale}`]}
+                defaultValue={settings[`copyright${locale}`]}
               />
             </fieldset>
           ))}
@@ -270,16 +275,11 @@ export function GeneralForm({ settings }: { settings: Settings }) {
         >
           Преглед преди запазване
         </button>
-        {state.error ? (
-          <p className="text-sm text-red-700" role="alert">
-            {state.error}
-          </p>
-        ) : null}
-        {state.success ? (
-          <p className="text-sm text-green-800" role="status">
-            {state.success}
-          </p>
-        ) : null}
+        <AdminFormStatus
+          id="general-form"
+          error={state.error}
+          success={state.success}
+        />
         <button
           className="ml-auto rounded-lg bg-conference-green px-5 py-2 text-sm font-bold text-white disabled:opacity-60"
           disabled={pending}

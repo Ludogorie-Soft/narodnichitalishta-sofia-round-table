@@ -1,28 +1,8 @@
 import Link from "next/link";
 import { BrandLogo } from "./brand-logo";
 import { LanguageSwitcher } from "./language-switcher";
+import { getDictionary } from "@/lib/dictionaries";
 import type { Locale } from "@/lib/i18n";
-
-const labels = {
-  bg: {
-    menu: "Меню",
-    home: "Начало",
-    about: "За събитието",
-    program: "Програма",
-    organizers: "Организатори",
-    ecosystem: "Народни читалища",
-    logo: "Лого на Фондация „Народни читалища“",
-  },
-  en: {
-    menu: "Menu",
-    home: "Home",
-    about: "About",
-    program: "Program",
-    organizers: "Organizers",
-    ecosystem: "Narodni Chitalishta",
-    logo: "Narodni Chitalishta Foundation logo",
-  },
-} satisfies Record<Locale, Record<string, string>>;
 
 const sectionLinks = [
   ["home", "#home"],
@@ -38,7 +18,7 @@ function NavigationLinks({
   locale: Locale;
   navigation?: Array<{ label: string; href: string }>;
 }) {
-  const copy = labels[locale];
+  const copy = getDictionary(locale).header;
   const links =
     navigation ??
     sectionLinks.map(([label, href]) => ({ label: copy[label], href }));
@@ -61,7 +41,7 @@ function NavigationLinks({
         target="_blank"
       >
         {copy.ecosystem}
-        <span className="sr-only"> (opens in a new tab)</span>
+        <span className="sr-only"> ({copy.opensInNewTab})</span>
       </a>
     </>
   );
@@ -74,7 +54,7 @@ export function PublicHeader({
   locale: Locale;
   navigation?: Array<{ label: string; href: string }>;
 }) {
-  const copy = labels[locale];
+  const copy = getDictionary(locale).header;
 
   return (
     <header className="sticky top-0 z-50 border-b border-black/10 bg-white/95 backdrop-blur">

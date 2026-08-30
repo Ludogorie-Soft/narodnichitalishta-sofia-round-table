@@ -33,7 +33,7 @@ export function AdminNavigation({ mobile = false }: { mobile?: boolean }) {
                 ? "bg-conference-green text-white"
                 : mobile
                   ? "text-neutral-800 hover:bg-neutral-100"
-                  : "text-white/80 hover:bg-white/10 hover:text-white"
+                  : "text-white hover:bg-white/10 hover:text-white"
             }`}
             href={link.href}
             key={link.href}
