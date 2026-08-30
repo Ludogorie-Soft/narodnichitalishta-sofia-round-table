@@ -1,4 +1,5 @@
 import { BrandLogo } from "./brand-logo";
+import type { PublicSiteData } from "@/db/queries/public-site";
 import type { Locale } from "@/lib/i18n";
 
 const copy = {
@@ -20,8 +21,34 @@ const copy = {
   },
 } satisfies Record<Locale, Record<string, string>>;
 
-export function PublicFooter({ locale }: { locale: Locale }) {
+export function PublicFooter({
+  locale,
+  navigation,
+  settings,
+}: {
+  locale: Locale;
+  navigation?: Array<{ label: string; href: string }>;
+  settings?: PublicSiteData["settings"];
+}) {
   const text = copy[locale];
+  const links = [
+    ...(navigation ?? []),
+    {
+      href: settings?.ngoHomeUrl ?? "https://narodnichitalishta.bg/",
+      label: "Narodnichitalishta.bg",
+    },
+    {
+      href:
+        settings?.chitalishtaMapUrl ?? "https://karta.narodnichitalishta.bg/",
+      label: "Karta.narodnichitalishta.bg",
+    },
+    {
+      href: settings?.grantsUrl ?? "https://grantove.narodnichitalishta.bg/",
+      label: "Grantove.narodnichitalishta.bg",
+    },
+  ].filter((link): link is { href: string; label: string } =>
+    Boolean(link.href),
+  );
 
   return (
     <footer className="border-t border-black/10 bg-neutral-50">
@@ -29,7 +56,7 @@ export function PublicFooter({ locale }: { locale: Locale }) {
         <div>
           <BrandLogo alt={text.logo} />
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-neutral-600">
-            {text.summary}
+            {settings?.footerBlurb || text.summary}
           </p>
         </div>
 
@@ -38,19 +65,11 @@ export function PublicFooter({ locale }: { locale: Locale }) {
             {text.links}
           </h2>
           <ul className="mt-3 space-y-2 text-sm">
-            <li>
-              <a href="https://narodnichitalishta.bg/">Narodnichitalishta.bg</a>
-            </li>
-            <li>
-              <a href="https://karta.narodnichitalishta.bg/">
-                Karta.narodnichitalishta.bg
-              </a>
-            </li>
-            <li>
-              <a href="https://grantove.narodnichitalishta.bg/">
-                Grantove.narodnichitalishta.bg
-              </a>
-            </li>
+            {links.map((link) => (
+              <li key={link.href}>
+                <a href={link.href}>{link.label}</a>
+              </li>
+            ))}
           </ul>
         </div>
 
@@ -59,26 +78,28 @@ export function PublicFooter({ locale }: { locale: Locale }) {
             {text.contact}
           </h2>
           <ul className="mt-3 space-y-2 text-sm">
-            <li>
-              <a href="mailto:info@narodnichitalishta.bg">
-                info@narodnichitalishta.bg
-              </a>
-            </li>
-            <li>
-              <a href="https://www.facebook.com/narodnichitalishta/?locale=bg_BG">
-                Facebook
-              </a>
-            </li>
-            <li>
-              <a href="https://www.linkedin.com/company/narodni-chitalishta-foundation/">
-                LinkedIn
-              </a>
-            </li>
+            {settings?.contactEmail ? (
+              <li>
+                <a href={`mailto:${settings.contactEmail}`}>
+                  {settings.contactEmail}
+                </a>
+              </li>
+            ) : null}
+            {settings?.facebookUrl ? (
+              <li>
+                <a href={settings.facebookUrl}>Facebook</a>
+              </li>
+            ) : null}
+            {settings?.linkedinUrl ? (
+              <li>
+                <a href={settings.linkedinUrl}>LinkedIn</a>
+              </li>
+            ) : null}
           </ul>
         </div>
       </div>
       <div className="border-t border-black/10 px-5 py-5 text-center text-xs text-neutral-500">
-        {text.copyright}
+        {settings?.copyright || text.copyright}
       </div>
     </footer>
   );

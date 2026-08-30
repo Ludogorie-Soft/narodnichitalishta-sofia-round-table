@@ -1,7 +1,9 @@
 import { ConferenceHero } from "./conference-hero";
+import { ProgramSchedule } from "./program-schedule";
 import { PublicFooter } from "./public-footer";
 import { PublicHeader } from "./public-header";
-import { Callout, PartnerLogo, SectionHeading, StatusBadge } from "./public-ui";
+import { PartnerLogo, SectionHeading } from "./public-ui";
+import { getPublicSiteData } from "@/db/queries/public-site";
 import type { Locale } from "@/lib/i18n";
 
 const copy = {
@@ -14,17 +16,19 @@ const copy = {
     ],
     programEyebrow: "18 септември · Ден 1",
     programHeading: "Дневен ред",
-    programTitle: "Проект на програма",
-    statusIntro: "Статусите ще се показват последователно:",
     organizersEyebrow: "Партньорство",
     organizersHeading: "За организаторите",
     organizersText:
       "Събитието се финансира от Столична община и се изпълнява по проект „Bridge Makers“ на ENCC, съфинансиран от Европейския съюз. То се реализира с домакинството и подкрепата на Бюрото за връзка на Европейския парламент в България.",
     logos: {
+      foundation: "Лого на Фондация „Народни читалища“",
       encc: "Лого на Европейската мрежа на културните центрове (ENCC)",
       sofia: "Герб на Столична община",
       parliament: "Лого на Европейския парламент",
     },
+    venueEyebrow: "Място",
+    venueHeading: "Място на провеждане",
+    map: "Отворете картата",
   },
   en: {
     skip: "Skip to main content",
@@ -35,22 +39,68 @@ const copy = {
     ],
     programEyebrow: "18 September · Day 1",
     programHeading: "Agenda",
-    programTitle: "Draft Program",
-    statusIntro: "Statuses will be presented consistently:",
     organizersEyebrow: "Partnership",
     organizersHeading: "About the Organizers",
     organizersText:
       "The event is funded by the Sofia Municipality and is implemented as part of the ENCC’s “Bridge Makers” project, co-funded by the European Union. It is organized with the hosting and support of the European Parliament Liaison Office in Bulgaria.",
     logos: {
+      foundation: "Narodni Chitalishta Foundation logo",
       encc: "European Network of Cultural Centres (ENCC) logo",
       sofia: "Coat of arms of Sofia Municipality",
       parliament: "European Parliament logo",
     },
+    venueEyebrow: "Venue",
+    venueHeading: "Conference venue",
+    map: "Open map",
   },
 } satisfies Record<Locale, Record<string, unknown>>;
 
-export function ConferencePage({ locale }: { locale: Locale }) {
+function fallbackPartnerImage(id: string, locale: Locale) {
+  const logos = copy[locale].logos;
+  const images = {
+    "partner-narodnichitalishta": {
+      src: "/brand/nc-logo.png",
+      width: 787,
+      height: 200,
+      alt: logos.foundation,
+    },
+    "partner-encc": {
+      src: "/brand/encc-logo.png",
+      width: 1536,
+      height: 922,
+      alt: logos.encc,
+    },
+    "partner-sofia": {
+      src: "/brand/sofia-municipality-crest.jpg",
+      width: 150,
+      height: 170,
+      alt: logos.sofia,
+    },
+    "partner-european-parliament": {
+      src: "/brand/european-parliament-logo.png",
+      width: 1365,
+      height: 1076,
+      alt: logos.parliament,
+    },
+  };
+
+  return images[id as keyof typeof images] ?? null;
+}
+
+export async function ConferencePage({ locale }: { locale: Locale }) {
   const text = copy[locale];
+  const data = await getPublicSiteData(locale);
+  const introduction = data.sections.introduction;
+  const organizers = data.sections.organizers;
+  const funding = data.sections.funding;
+  const introductionParagraphs =
+    introduction && introduction.paragraphs.length > 0
+      ? introduction.paragraphs
+      : text.aboutParagraphs;
+  const organizerParagraphs = [
+    ...(organizers?.paragraphs ?? []),
+    ...(funding?.paragraphs ?? [text.organizersText]),
+  ];
 
   return (
     <>
@@ -60,7 +110,7 @@ export function ConferencePage({ locale }: { locale: Locale }) {
       >
         {text.skip}
       </a>
-      <PublicHeader locale={locale} />
+      <PublicHeader locale={locale} navigation={data.navigation} />
       <main id="main-content">
         <ConferenceHero locale={locale} />
 
@@ -70,10 +120,13 @@ export function ConferencePage({ locale }: { locale: Locale }) {
         >
           <div className="mx-auto w-full max-w-6xl">
             <SectionHeading eyebrow={text.aboutEyebrow}>
-              {text.aboutHeading}
+              {introduction?.heading || text.aboutHeading}
             </SectionHeading>
-            <div className="mt-8 max-w-4xl space-y-6 text-lg leading-relaxed text-neutral-700">
-              {text.aboutParagraphs.map((paragraph) => (
+            <div
+              className="mt-8 max-w-4xl space-y-6 text-lg leading-relaxed text-neutral-700"
+              lang={introduction?.contentLocale}
+            >
+              {introductionParagraphs.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
             </div>
@@ -88,16 +141,11 @@ export function ConferencePage({ locale }: { locale: Locale }) {
             <SectionHeading eyebrow={text.programEyebrow}>
               {text.programHeading}
             </SectionHeading>
-            <div className="mt-10">
-              <Callout title={text.programTitle}>
-                <p>{text.statusIntro}</p>
-                <div className="mt-4 flex flex-wrap gap-3">
-                  <StatusBadge locale={locale} status="confirmed" />
-                  <StatusBadge locale={locale} status="to_be_confirmed" />
-                  <StatusBadge locale={locale} status="cancelled" />
-                </div>
-              </Callout>
-            </div>
+            <ProgramSchedule
+              days={data.schedule}
+              locale={locale}
+              timezone={data.settings.timezone}
+            />
           </div>
         </section>
 
@@ -107,35 +155,88 @@ export function ConferencePage({ locale }: { locale: Locale }) {
         >
           <div className="mx-auto w-full max-w-6xl">
             <SectionHeading eyebrow={text.organizersEyebrow}>
-              {text.organizersHeading}
+              {organizers?.heading || text.organizersHeading}
             </SectionHeading>
-            <p className="mt-8 max-w-4xl text-lg leading-relaxed text-neutral-700">
-              {text.organizersText}
-            </p>
-            <div className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-3">
-              <PartnerLogo
-                alt={text.logos.encc}
-                height={922}
-                src="/brand/encc-logo.png"
-                width={1536}
-              />
-              <PartnerLogo
-                alt={text.logos.sofia}
-                height={170}
-                src="/brand/sofia-municipality-crest.jpg"
-                width={150}
-              />
-              <PartnerLogo
-                alt={text.logos.parliament}
-                height={1076}
-                src="/brand/european-parliament-logo.png"
-                width={1365}
-              />
+            <div
+              className="mt-8 max-w-4xl space-y-6 text-lg leading-relaxed text-neutral-700"
+              lang={organizers?.contentLocale}
+            >
+              {organizerParagraphs.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </div>
+            <div className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
+              {data.partners.map((partner) => {
+                const fallback = fallbackPartnerImage(partner.id, locale);
+                const image = partner.image
+                  ? {
+                      src: partner.image.url,
+                      width: partner.image.width ?? 800,
+                      height: partner.image.height ?? 400,
+                      alt: partner.image.alt,
+                    }
+                  : fallback;
+                const logo = image ? (
+                  <PartnerLogo {...image} />
+                ) : (
+                  <div className="flex min-h-32 items-center justify-center rounded-xl border border-neutral-200 p-5 text-center font-semibold">
+                    {partner.name}
+                  </div>
+                );
+
+                return partner.url ? (
+                  <a
+                    aria-label={partner.name}
+                    href={partner.url}
+                    key={partner.id}
+                  >
+                    {logo}
+                  </a>
+                ) : (
+                  <div key={partner.id}>{logo}</div>
+                );
+              })}
             </div>
           </div>
         </section>
+
+        {data.settings.venuePublished &&
+        (data.settings.venueName || data.settings.venueAddress) ? (
+          <section
+            className="scroll-mt-28 bg-neutral-50 px-5 py-20 sm:px-8 sm:py-28"
+            id="venue"
+          >
+            <div className="mx-auto w-full max-w-6xl">
+              <SectionHeading eyebrow={text.venueEyebrow}>
+                {text.venueHeading}
+              </SectionHeading>
+              <div className="mt-8 text-lg leading-relaxed">
+                {data.settings.venueName ? (
+                  <p className="font-semibold">{data.settings.venueName}</p>
+                ) : null}
+                {data.settings.venueAddress ? (
+                  <p>{data.settings.venueAddress}</p>
+                ) : null}
+                {data.settings.mapUrl ? (
+                  <p className="mt-4">
+                    <a
+                      className="font-semibold text-conference-green underline underline-offset-4"
+                      href={data.settings.mapUrl}
+                    >
+                      {text.map}
+                    </a>
+                  </p>
+                ) : null}
+              </div>
+            </div>
+          </section>
+        ) : null}
       </main>
-      <PublicFooter locale={locale} />
+      <PublicFooter
+        locale={locale}
+        navigation={data.navigation}
+        settings={data.settings}
+      />
     </>
   );
 }

@@ -55,7 +55,7 @@ Policy note: Vercel currently describes Hobby as a free plan for personal, non-c
 - [x] Use the Neon serverless driver through Drizzle.
 - [x] Never store image bytes in PostgreSQL.
 - [x] Never write uploads to the Vercel application filesystem because it is not persistent.
-- [ ] Use Server Components for public content and Client Components only where interaction requires them.
+- [x] Use Server Components for public content and Client Components only where interaction requires them.
 - [x] Use server actions or route handlers for mutations, with session checks and Zod validation inside every mutation.
 - [ ] Revalidate the public-site cache immediately after a successful content change.
 - [x] Keep production schema changes in committed, reviewable migration files; do not use schema push against production.
@@ -126,8 +126,8 @@ docs/
 ~~~
 
 - [x] Create this structure or document any deliberate deviation in the repository README.
-- [ ] Keep reusable UI components independent from database query code.
-- [ ] Keep Bulgarian and English field handling typed rather than passing arbitrary language strings throughout the app.
+- [x] Keep reusable UI components independent from database query code.
+- [x] Keep Bulgarian and English field handling typed rather than passing arbitrary language strings throughout the app.
 
 ## 6. Database model
 
@@ -160,7 +160,7 @@ docs/
 
 - [x] Define item types for `registration`, `opening`, `talk`, `roundtable`, `panel`, `discussion`, `break`, `lunch`, `visit`, and `closing`.
 - [x] Define public status values for `confirmed`, `to_be_confirmed`, and `cancelled`.
-- [ ] Display status as a translated badge and never embed “to be confirmed” only inside free text.
+- [x] Display status as a translated badge and never embed “to be confirmed” only inside free text.
 
 ## 7. Phase 0 — Inputs and safeguards
 
@@ -264,8 +264,8 @@ docs/
 - [x] Normalize repeated speakers where appropriate.
 - [x] Preserve confirmation status as structured data.
 - [ ] Compare the seeded Bulgarian program line by line with the Word source.
-- [x] Verify chronological order and detect overlaps.
-- [x] Add a development-only report for missing translations, invalid times, and orphaned relations.
+- [ ] Verify chronological order and detect overlaps.
+- [ ] Add a development-only report for missing translations, invalid times, and orphaned relations.
 
 ## 13. Phase 6 — Public visual system
 
@@ -292,29 +292,29 @@ docs/
 
 - [x] Build the Hero section with event name, theme, dates, Sofia, and optional venue/address.
 - [x] Build the Introduction section from current homepage content.
-- [ ] Build the About/Organizers section with ENCC, Фондация „Народни читалища“, Sofia municipality, European Parliament, and funding context.
-- [ ] Build the Program section from structured schedule data.
-- [ ] Build the Partners/Funders section from editable partner records.
-- [ ] Build the Venue section so it can be hidden until venue data is entered.
-- [ ] Build the Footer from editable settings and navigation records.
+- [x] Build the About/Organizers section with ENCC, Фондация „Народни читалища“, Sofia municipality, European Parliament, and funding context.
+- [x] Build the Program section from structured schedule data.
+- [x] Build the Partners/Funders section from editable partner records.
+- [x] Build the Venue section so it can be hidden until venue data is entered.
+- [x] Build the Footer from editable settings and navigation records.
 - [x] Ensure hidden or incomplete sections leave no empty whitespace or broken navigation links.
 - [x] Ensure anchor links land below the sticky header.
 
 ## 15. Phase 8 — Schedule experience
 
-- [ ] Make the schedule the strongest information hierarchy on the page.
-- [ ] Add an accessible Day 1 / Day 2 selector while keeping both days available to search engines and no-JavaScript users.
-- [ ] Display the full date, weekday, and local timezone for each day.
-- [ ] Group schedule items under visually distinct panel headings.
-- [ ] Use a time rail or compact time column on desktop.
-- [ ] Use full-width session cards with time first on mobile.
-- [ ] Distinguish breaks, lunch, registration, and visits without reducing legibility.
-- [ ] Display `За потвърждение` and its approved English equivalent as a consistent badge.
-- [ ] Display cancelled items clearly unless an administrator hides them.
-- [ ] Keep speaker name and affiliation/title inline; do not link to profiles.
-- [ ] Allow long descriptions to wrap naturally and avoid fixed heights.
+- [x] Make the schedule the strongest information hierarchy on the page.
+- [x] Add an accessible Day 1 / Day 2 selector while keeping both days available to search engines and no-JavaScript users.
+- [x] Display the full date, weekday, and local timezone for each day.
+- [x] Group schedule items under visually distinct panel headings.
+- [x] Use a time rail or compact time column on desktop.
+- [x] Use full-width session cards with time first on mobile.
+- [x] Distinguish breaks, lunch, registration, and visits without reducing legibility.
+- [x] Display `За потвърждение` and its approved English equivalent as a consistent badge.
+- [x] Display cancelled items clearly unless an administrator hides them.
+- [x] Keep speaker name and affiliation/title inline; do not link to profiles.
+- [x] Allow long descriptions to wrap naturally and avoid fixed heights.
 - [ ] Use expandable mobile descriptions only if title, time, status, and speakers remain visible.
-- [ ] Use semantic headings and ordered content that remain understandable without styling.
+- [x] Use semantic headings and ordered content that remain understandable without styling.
 - [ ] Verify all schedule controls by keyboard and announce state changes to assistive technology.
 
 ## 16. Phase 9 — Admin panel

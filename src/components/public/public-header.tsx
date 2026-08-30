@@ -31,18 +31,27 @@ const sectionLinks = [
   ["organizers", "#organizers"],
 ] as const;
 
-function NavigationLinks({ locale }: { locale: Locale }) {
+function NavigationLinks({
+  locale,
+  navigation,
+}: {
+  locale: Locale;
+  navigation?: Array<{ label: string; href: string }>;
+}) {
   const copy = labels[locale];
+  const links =
+    navigation ??
+    sectionLinks.map(([label, href]) => ({ label: copy[label], href }));
 
   return (
     <>
-      {sectionLinks.map(([label, href]) => (
+      {links.map(({ label, href }) => (
         <Link
           className="rounded px-2 py-2 text-sm font-semibold text-neutral-700 transition-colors hover:text-conference-green"
           href={href}
           key={href}
         >
-          {copy[label]}
+          {label}
         </Link>
       ))}
       <a
@@ -58,7 +67,13 @@ function NavigationLinks({ locale }: { locale: Locale }) {
   );
 }
 
-export function PublicHeader({ locale }: { locale: Locale }) {
+export function PublicHeader({
+  locale,
+  navigation,
+}: {
+  locale: Locale;
+  navigation?: Array<{ label: string; href: string }>;
+}) {
   const copy = labels[locale];
 
   return (
@@ -76,7 +91,7 @@ export function PublicHeader({ locale }: { locale: Locale }) {
           aria-label={copy.menu}
           className="hidden items-center gap-1 lg:flex"
         >
-          <NavigationLinks locale={locale} />
+          <NavigationLinks locale={locale} navigation={navigation} />
         </nav>
 
         <LanguageSwitcher locale={locale} />
@@ -89,7 +104,7 @@ export function PublicHeader({ locale }: { locale: Locale }) {
             aria-label={copy.menu}
             className="absolute right-0 top-12 flex w-64 flex-col rounded-xl border border-neutral-200 bg-white p-3 shadow-xl"
           >
-            <NavigationLinks locale={locale} />
+            <NavigationLinks locale={locale} navigation={navigation} />
           </nav>
         </details>
       </div>

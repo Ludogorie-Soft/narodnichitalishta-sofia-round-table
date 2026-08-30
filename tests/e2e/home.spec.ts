@@ -39,6 +39,34 @@ test("language switcher preserves the current section", async ({ page }) => {
   ).toBeVisible();
 });
 
+test("Bulgarian program renders both structured days", async ({ page }) => {
+  await page.goto("/#program");
+  await expect(
+    page.getByRole("heading", {
+      name: /ПАНЕЛ 1 — Диалог между местните власти/,
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Ден 2", exact: true }),
+  ).toHaveAttribute("href", "#program-day-day-2026-09-19");
+  await expect(page.getByText("За потвърждение").first()).toBeVisible();
+  await expect(page.getByText("Юрий Вълковски")).toBeVisible();
+});
+
+test("English program identifies untranslated source entries", async ({
+  page,
+}) => {
+  await page.goto("/en#program");
+  await expect(
+    page.getByText("English translation pending").first(),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: /ПАНЕЛ 2 — Ролята на читалищата/,
+    }),
+  ).toHaveAttribute("lang", "bg");
+});
+
 test("mobile navigation exposes the section links", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 720 });
   await page.goto("/");
