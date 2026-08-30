@@ -74,11 +74,19 @@ Neon Free-plan limits and scale-to-zero behavior are documented in `docs/operati
 
 ## Creating administrators
 
-There is no public registration. After Phase 3, run `npm run admin:create` locally. It will prompt for email, display name, and password. Confirmed accounts:
+There is no public registration. After `.env.local` has `DATABASE_URL` and `BETTER_AUTH_SECRET`, run:
+
+```bash
+npm run admin:create
+```
+
+It prompts for email, display name, and password (minimum 12 characters). Confirmed accounts:
 
 - Emilian Kadiyski — `e.kadiyski@gmail.com`
 - Maria Getova — `maria.getova@narodnichitalishta.bg`
 - Yuriy Vulkovsky — `yuriy.vulkovsky@narodnichitalishta.bg`
+
+Then open [http://localhost:3000/admin/login](http://localhost:3000/admin/login).
 
 ## Testing
 
@@ -118,8 +126,7 @@ The old DNS target is not yet recorded. Capture it in a private launch runbook b
 
 Application code lives under `src/` as in the implementation plan. Deliberate Phase 1 notes:
 
-- Admin and API routes are directory placeholders only. They are not wired until authentication and Blob upload exist.
-- `db:*` and `admin:create` scripts exist but exit until Phases 2, 3, and 5.
+- Admin routes are authenticated. `/admin` redirects anonymous users to `/admin/login`. There is no public signup.
 - Brand files in `public/brand/` are development copies. Production images will be served from Vercel Blob.
 - Wix Madefor fonts are not self-hosted yet (Phase 6).
 - `html lang` is set from the request path via `src/proxy.ts` (`/` = `bg`, `/en` = `en`).

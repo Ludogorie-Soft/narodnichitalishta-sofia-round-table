@@ -6,7 +6,7 @@ The public site and admin panel read and write conference content in Neon. Use t
 
 ### Recommended setup
 
-1. Create a Neon project in an **EU region** if one is available (for example Frankfurt or similar).
+1. Create a Neon project in an **EU region** if one is available (for example Frankfurt or similar). Development is on `aws-eu-central-1`.
 2. On the Free plan, create a **development branch** besides production (the plan allows 10 branches per project).
 3. Put the development branch connection string in local `.env.local`.
 4. Put Preview and Production strings in Vercel as separate environment values. Do not reuse the production database for Preview.

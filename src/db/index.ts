@@ -1,5 +1,4 @@
-import "server-only";
-
+/** Server and CLI only. Do not import from Client Components. */
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import * as schema from "./schema";

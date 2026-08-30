@@ -51,7 +51,7 @@ Policy note: Vercel currently describes Hobby as a free plan for personal, non-c
 ### Architecture rules
 
 - [x] Keep all database, authentication, mutation, and secret-handling code server-only.
-- [ ] Use the Node.js runtime for authenticated admin and mutation routes.
+- [x] Use the Node.js runtime for authenticated admin and mutation routes.
 - [x] Use the Neon serverless driver through Drizzle.
 - [ ] Never store image bytes in PostgreSQL.
 - [ ] Never write uploads to the Vercel application filesystem because it is not persistent.
@@ -136,7 +136,7 @@ docs/
 - [x] Generate the Better Auth schema for `user`, `session`, `account`, and `verification` using the Drizzle adapter.
 - [x] Add an `active` or equivalent server-owned field that allows an administrator account to be disabled.
 - [x] Ensure email addresses are unique and normalized.
-- [ ] Do not expose a public signup endpoint or signup UI.
+- [x] Do not expose a public signup endpoint or signup UI.
 
 ### Application tables
 
@@ -202,39 +202,39 @@ docs/
 
 ## 9. Phase 2 — Neon and migrations
 
-- [ ] Create the Neon project in an EU region where available and appropriate.
+- [x] Create the Neon project in an EU region where available and appropriate.
 - [ ] Create separate production and development database branches if the selected Neon plan permits them.
-- [ ] Obtain pooled/serverless connection strings for the intended environments.
+- [x] Obtain pooled/serverless connection strings for the intended environments.
 - [ ] Configure `DATABASE_URL` locally and separately in Vercel Preview and Production.
 - [x] Install Drizzle ORM, Drizzle Kit, and the Neon serverless driver.
 - [x] Implement the server-only database client.
 - [x] Implement all schemas and relations from Section 6.
 - [x] Generate the initial SQL migration and review it before applying it.
-- [ ] Apply migrations to development first.
+- [x] Apply migrations to development first.
 - [ ] Run a clean-database migration test.
 - [ ] Apply reviewed migrations to production only during deployment.
 - [x] Document Neon free-plan limits and scale-to-zero behavior in the operations guide.
 
 ## 10. Phase 3 — Authentication and administrator management
 
-- [ ] Install and configure Better Auth with the Drizzle adapter.
-- [ ] Enable email/password sign-in.
-- [ ] Set `disableSignUp: true` for email/password authentication.
-- [ ] Store `BETTER_AUTH_SECRET` only in local secret storage and Vercel environment variables.
-- [ ] Set trusted production origins explicitly.
-- [ ] Use secure, HTTP-only, same-site cookies in production.
-- [ ] Enable authentication rate limiting and verify trusted proxy/IP configuration for Vercel.
-- [ ] Add server guards for every `/admin` page and admin mutation.
-- [ ] Redirect unauthenticated users to `/admin/login`.
-- [ ] Redirect authenticated users away from the login page to the dashboard.
-- [ ] Create a secure `admin:create` script that prompts locally for email, display name, and password.
+- [x] Install and configure Better Auth with the Drizzle adapter.
+- [x] Enable email/password sign-in.
+- [x] Set `disableSignUp: true` for email/password authentication.
+- [x] Store `BETTER_AUTH_SECRET` only in local secret storage and Vercel environment variables.
+- [x] Set trusted production origins explicitly.
+- [x] Use secure, HTTP-only, same-site cookies in production.
+- [x] Enable authentication rate limiting and verify trusted proxy/IP configuration for Vercel.
+- [x] Add server guards for every `/admin` page and admin mutation.
+- [x] Redirect unauthenticated users to `/admin/login`.
+- [x] Redirect authenticated users away from the login page to the dashboard.
+- [x] Create a secure `admin:create` script that prompts locally for email, display name, and password.
 - [ ] Create the first administrator outside the public web UI.
-- [ ] Add an authenticated Users screen for listing, creating, disabling, and re-enabling accounts.
-- [ ] Allow users to change their own password.
-- [ ] Allow another active administrator to set a temporary password when email reset is not configured.
-- [ ] Prevent disabling the last active administrator.
-- [ ] Prevent accidental self-disablement without explicit confirmation.
-- [ ] Record account-management actions in the audit log without passwords or tokens.
+- [x] Add an authenticated Users screen for listing, creating, disabling, and re-enabling accounts.
+- [x] Allow users to change their own password.
+- [x] Allow another active administrator to set a temporary password when email reset is not configured.
+- [x] Prevent disabling the last active administrator.
+- [x] Prevent accidental self-disablement without explicit confirmation.
+- [x] Record account-management actions in the audit log without passwords or tokens.
 - [ ] Test invalid login, disabled account, expired session, logout, password change, and protected-route access.
 
 ## 11. Phase 4 — Media storage
