@@ -15,7 +15,8 @@ import { normalizeTime, validateTimeRange } from "@/lib/admin-validation";
 import { recordAudit } from "@/lib/audit";
 import { revalidatePublicSite } from "@/lib/cache";
 import { scheduleItemStatuses, scheduleItemTypes } from "@/lib/datetime";
-import { requireAdminSession } from "@/lib/session";
+import { mutationErrorResult } from "@/lib/security";
+import { requireAdminMutation } from "@/lib/session";
 
 export type ScheduleFormState = {
   error?: string;
@@ -45,107 +46,111 @@ export async function saveDayAction(
   _previous: ScheduleFormState,
   formData: FormData,
 ): Promise<ScheduleFormState> {
-  const session = await requireAdminSession();
-  const parsed = z
-    .object({
-      id: idSchema,
-      date: z.string().date(),
-      titleBg: title,
-      titleEn: title,
-      subtitleBg: description,
-      subtitleEn: description,
-      visible: z.boolean(),
-    })
-    .safeParse({
-      id: text(formData, "id"),
-      date: text(formData, "date"),
-      titleBg: text(formData, "titleBg"),
-      titleEn: text(formData, "titleEn"),
-      subtitleBg: text(formData, "subtitleBg"),
-      subtitleEn: text(formData, "subtitleEn"),
-      visible: formData.get("visible") === "on",
-    });
-  if (!parsed.success) return { error: "Проверете датата и текстовете." };
-
-  const db = getDb();
-  const warnings = [];
-  if (!parsed.data.titleBg) warnings.push("Липсва българско заглавие.");
-  if (!parsed.data.titleEn) warnings.push("Липсва английско заглавие.");
-  const id = parsed.data.id || crypto.randomUUID();
-  const existing = parsed.data.id
-    ? await db.query.scheduleDays.findFirst({
-        where: eq(scheduleDays.id, parsed.data.id),
+  try {
+    const session = await requireAdminMutation();
+    const parsed = z
+      .object({
+        id: idSchema,
+        date: z.string().date(),
+        titleBg: title,
+        titleEn: title,
+        subtitleBg: description,
+        subtitleEn: description,
+        visible: z.boolean(),
       })
-    : null;
+      .safeParse({
+        id: text(formData, "id"),
+        date: text(formData, "date"),
+        titleBg: text(formData, "titleBg"),
+        titleEn: text(formData, "titleEn"),
+        subtitleBg: text(formData, "subtitleBg"),
+        subtitleEn: text(formData, "subtitleEn"),
+        visible: formData.get("visible") === "on",
+      });
+    if (!parsed.success) return { error: "Проверете датата и текстовете." };
 
-  if (existing) {
-    await db
-      .update(scheduleDays)
-      .set({
+    const db = getDb();
+    const warnings = [];
+    if (!parsed.data.titleBg) warnings.push("Липсва българско заглавие.");
+    if (!parsed.data.titleEn) warnings.push("Липсва английско заглавие.");
+    const id = parsed.data.id || crypto.randomUUID();
+    const existing = parsed.data.id
+      ? await db.query.scheduleDays.findFirst({
+          where: eq(scheduleDays.id, parsed.data.id),
+        })
+      : null;
+
+    if (existing) {
+      await db
+        .update(scheduleDays)
+        .set({
+          ...parsed.data,
+          subtitleBg: optional(parsed.data.subtitleBg),
+          subtitleEn: optional(parsed.data.subtitleEn),
+          updatedAt: new Date(),
+        })
+        .where(eq(scheduleDays.id, id));
+    } else {
+      const rows = await db.query.scheduleDays.findMany();
+      await db.insert(scheduleDays).values({
         ...parsed.data,
+        id,
+        titleBg: parsed.data.titleBg,
+        titleEn: parsed.data.titleEn,
         subtitleBg: optional(parsed.data.subtitleBg),
         subtitleEn: optional(parsed.data.subtitleEn),
-        updatedAt: new Date(),
-      })
-      .where(eq(scheduleDays.id, id));
-  } else {
-    const rows = await db.query.scheduleDays.findMany();
-    await db.insert(scheduleDays).values({
-      ...parsed.data,
-      id,
-      titleBg: parsed.data.titleBg,
-      titleEn: parsed.data.titleEn,
-      subtitleBg: optional(parsed.data.subtitleBg),
-      subtitleEn: optional(parsed.data.subtitleEn),
-      sortOrder: await nextSortOrder(rows),
+        sortOrder: await nextSortOrder(rows),
+      });
+    }
+    await recordAudit({
+      actorUserId: session.user.id,
+      action: existing
+        ? existing.visible !== parsed.data.visible
+          ? "visibility"
+          : "update"
+        : "create",
+      entityType: "schedule_day",
+      entityId: id,
+      summary: `${existing ? "Редактиран" : "Създаден"} ден ${parsed.data.date}.`,
     });
+    refreshSchedule();
+    return { success: "Денят е публикуван.", warnings };
+  } catch (error) {
+    return mutationErrorResult(error, "Денят не беше запазен.");
   }
-  await recordAudit({
-    actorUserId: session.user.id,
-    action: existing
-      ? existing.visible !== parsed.data.visible
-        ? "visibility"
-        : "update"
-      : "create",
-    entityType: "schedule_day",
-    entityId: id,
-    summary: `${existing ? "Редактиран" : "Създаден"} ден ${parsed.data.date}.`,
-  });
-  refreshSchedule();
-  return { success: "Денят е публикуван.", warnings };
 }
 
 export async function savePanelAction(
   _previous: ScheduleFormState,
   formData: FormData,
 ): Promise<ScheduleFormState> {
-  const session = await requireAdminSession();
-  const parsed = z
-    .object({
-      id: idSchema,
-      dayId: z.string().min(1),
-      startTime: z.string(),
-      endTime: z.string(),
-      titleBg: title,
-      titleEn: title,
-      descriptionBg: description,
-      descriptionEn: description,
-      visible: z.boolean(),
-    })
-    .safeParse({
-      id: text(formData, "id"),
-      dayId: text(formData, "dayId"),
-      startTime: text(formData, "startTime"),
-      endTime: text(formData, "endTime"),
-      titleBg: text(formData, "titleBg"),
-      titleEn: text(formData, "titleEn"),
-      descriptionBg: text(formData, "descriptionBg"),
-      descriptionEn: text(formData, "descriptionEn"),
-      visible: formData.get("visible") === "on",
-    });
-  if (!parsed.success) return { error: "Проверете полетата на панела." };
-
   try {
+    const session = await requireAdminMutation();
+    const parsed = z
+      .object({
+        id: idSchema,
+        dayId: z.string().min(1),
+        startTime: z.string(),
+        endTime: z.string(),
+        titleBg: title,
+        titleEn: title,
+        descriptionBg: description,
+        descriptionEn: description,
+        visible: z.boolean(),
+      })
+      .safeParse({
+        id: text(formData, "id"),
+        dayId: text(formData, "dayId"),
+        startTime: text(formData, "startTime"),
+        endTime: text(formData, "endTime"),
+        titleBg: text(formData, "titleBg"),
+        titleEn: text(formData, "titleEn"),
+        descriptionBg: text(formData, "descriptionBg"),
+        descriptionEn: text(formData, "descriptionEn"),
+        visible: formData.get("visible") === "on",
+      });
+    if (!parsed.success) return { error: "Проверете полетата на панела." };
+
     const startTime = normalizeTime(parsed.data.startTime);
     const endTime = normalizeTime(parsed.data.endTime);
     validateTimeRange(startTime, endTime, { required: true });
@@ -204,7 +209,7 @@ export async function savePanelAction(
       ],
     };
   } catch (error) {
-    return { error: error instanceof Error ? error.message : "Грешка." };
+    return { error: mutationErrorResult(error, "Грешка.").error };
   }
 }
 
@@ -212,41 +217,41 @@ export async function saveItemAction(
   _previous: ScheduleFormState,
   formData: FormData,
 ): Promise<ScheduleFormState> {
-  const session = await requireAdminSession();
-  const parsed = z
-    .object({
-      id: idSchema,
-      dayId: z.string().min(1),
-      panelId: z.string(),
-      startTime: z.string(),
-      endTime: z.string(),
-      itemType: z.enum(scheduleItemTypes),
-      status: z.enum(scheduleItemStatuses),
-      titleBg: title,
-      titleEn: title,
-      descriptionBg: description,
-      descriptionEn: description,
-      visible: z.boolean(),
-      speakerIds: z.array(z.string().min(1)),
-    })
-    .safeParse({
-      id: text(formData, "id"),
-      dayId: text(formData, "dayId"),
-      panelId: text(formData, "panelId"),
-      startTime: text(formData, "startTime"),
-      endTime: text(formData, "endTime"),
-      itemType: text(formData, "itemType"),
-      status: text(formData, "status"),
-      titleBg: text(formData, "titleBg"),
-      titleEn: text(formData, "titleEn"),
-      descriptionBg: text(formData, "descriptionBg"),
-      descriptionEn: text(formData, "descriptionEn"),
-      visible: formData.get("visible") === "on",
-      speakerIds: formData.getAll("speakerIds").map(String),
-    });
-  if (!parsed.success) return { error: "Проверете полетата на сесията." };
-
   try {
+    const session = await requireAdminMutation();
+    const parsed = z
+      .object({
+        id: idSchema,
+        dayId: z.string().min(1),
+        panelId: z.string(),
+        startTime: z.string(),
+        endTime: z.string(),
+        itemType: z.enum(scheduleItemTypes),
+        status: z.enum(scheduleItemStatuses),
+        titleBg: title,
+        titleEn: title,
+        descriptionBg: description,
+        descriptionEn: description,
+        visible: z.boolean(),
+        speakerIds: z.array(z.string().min(1)),
+      })
+      .safeParse({
+        id: text(formData, "id"),
+        dayId: text(formData, "dayId"),
+        panelId: text(formData, "panelId"),
+        startTime: text(formData, "startTime"),
+        endTime: text(formData, "endTime"),
+        itemType: text(formData, "itemType"),
+        status: text(formData, "status"),
+        titleBg: text(formData, "titleBg"),
+        titleEn: text(formData, "titleEn"),
+        descriptionBg: text(formData, "descriptionBg"),
+        descriptionEn: text(formData, "descriptionEn"),
+        visible: formData.get("visible") === "on",
+        speakerIds: formData.getAll("speakerIds").map(String),
+      });
+    if (!parsed.success) return { error: "Проверете полетата на сесията." };
+
     const startTime = normalizeTime(parsed.data.startTime);
     const endTime = normalizeTime(parsed.data.endTime);
     validateTimeRange(startTime, endTime);
@@ -348,7 +353,7 @@ export async function saveItemAction(
       ],
     };
   } catch (error) {
-    return { error: error instanceof Error ? error.message : "Грешка." };
+    return { error: mutationErrorResult(error, "Грешка.").error };
   }
 }
 
@@ -356,57 +361,61 @@ export async function saveSpeakerAction(
   _previous: ScheduleFormState,
   formData: FormData,
 ): Promise<ScheduleFormState> {
-  const session = await requireAdminSession();
-  const parsed = z
-    .object({
-      id: idSchema,
-      nameBg: title,
-      nameEn: title,
-      affiliationBg: description,
-      affiliationEn: description,
-    })
-    .safeParse({
-      id: text(formData, "id"),
-      nameBg: text(formData, "nameBg"),
-      nameEn: text(formData, "nameEn"),
-      affiliationBg: text(formData, "affiliationBg"),
-      affiliationEn: text(formData, "affiliationEn"),
+  try {
+    const session = await requireAdminMutation();
+    const parsed = z
+      .object({
+        id: idSchema,
+        nameBg: title,
+        nameEn: title,
+        affiliationBg: description,
+        affiliationEn: description,
+      })
+      .safeParse({
+        id: text(formData, "id"),
+        nameBg: text(formData, "nameBg"),
+        nameEn: text(formData, "nameEn"),
+        affiliationBg: text(formData, "affiliationBg"),
+        affiliationEn: text(formData, "affiliationEn"),
+      });
+    if (!parsed.success || (!parsed.data?.nameBg && !parsed.data?.nameEn)) {
+      return { error: "Въведете име на поне един език." };
+    }
+    const db = getDb();
+    const id = parsed.data.id || crypto.randomUUID();
+    const existing = parsed.data.id
+      ? await db.query.speakers.findFirst({ where: eq(speakers.id, id) })
+      : null;
+    const values = {
+      nameBg: parsed.data.nameBg,
+      nameEn: parsed.data.nameEn,
+      affiliationBg: optional(parsed.data.affiliationBg),
+      affiliationEn: optional(parsed.data.affiliationEn),
+    };
+    if (existing) {
+      await db
+        .update(speakers)
+        .set({ ...values, updatedAt: new Date() })
+        .where(eq(speakers.id, id));
+    } else {
+      await db.insert(speakers).values({ ...values, id });
+    }
+    await recordAudit({
+      actorUserId: session.user.id,
+      action: existing ? "update" : "create",
+      entityType: "speaker",
+      entityId: id,
+      summary: `${existing ? "Редактиран" : "Създаден"} говорител „${parsed.data.nameBg || parsed.data.nameEn}“.`,
     });
-  if (!parsed.success || (!parsed.data?.nameBg && !parsed.data?.nameEn)) {
-    return { error: "Въведете име на поне един език." };
+    refreshSchedule();
+    return { success: "Говорителят е запазен." };
+  } catch (error) {
+    return mutationErrorResult(error, "Говорителят не беше запазен.");
   }
-  const db = getDb();
-  const id = parsed.data.id || crypto.randomUUID();
-  const existing = parsed.data.id
-    ? await db.query.speakers.findFirst({ where: eq(speakers.id, id) })
-    : null;
-  const values = {
-    nameBg: parsed.data.nameBg,
-    nameEn: parsed.data.nameEn,
-    affiliationBg: optional(parsed.data.affiliationBg),
-    affiliationEn: optional(parsed.data.affiliationEn),
-  };
-  if (existing) {
-    await db
-      .update(speakers)
-      .set({ ...values, updatedAt: new Date() })
-      .where(eq(speakers.id, id));
-  } else {
-    await db.insert(speakers).values({ ...values, id });
-  }
-  await recordAudit({
-    actorUserId: session.user.id,
-    action: existing ? "update" : "create",
-    entityType: "speaker",
-    entityId: id,
-    summary: `${existing ? "Редактиран" : "Създаден"} говорител „${parsed.data.nameBg || parsed.data.nameEn}“.`,
-  });
-  refreshSchedule();
-  return { success: "Говорителят е запазен." };
 }
 
 export async function moveScheduleEntityAction(formData: FormData) {
-  const session = await requireAdminSession();
+  const session = await requireAdminMutation();
   const entity = text(formData, "entity");
   const id = text(formData, "id");
   const direction = text(formData, "direction");
@@ -481,7 +490,7 @@ export async function moveScheduleEntityAction(formData: FormData) {
 }
 
 export async function moveItemSpeakerAction(formData: FormData) {
-  const session = await requireAdminSession();
+  const session = await requireAdminMutation();
   const itemId = text(formData, "id");
   const [speakerId, direction] = text(formData, "speakerCommand").split(":");
   if (!speakerId || (direction !== "up" && direction !== "down")) return;
@@ -529,14 +538,14 @@ export async function deleteScheduleEntityAction(
   _previous: ScheduleFormState,
   formData: FormData,
 ): Promise<ScheduleFormState> {
-  const session = await requireAdminSession();
-  if (formData.get("confirmation") !== "DELETE") {
-    return { error: "Въведете DELETE, за да потвърдите." };
-  }
-  const entity = text(formData, "entity");
-  const id = text(formData, "id");
-  const db = getDb();
   try {
+    const session = await requireAdminMutation({ sensitive: true });
+    if (formData.get("confirmation") !== "DELETE") {
+      return { error: "Въведете DELETE, за да потвърдите." };
+    }
+    const entity = text(formData, "entity");
+    const id = text(formData, "id");
+    const db = getDb();
     if (entity === "day") {
       await db.delete(scheduleDays).where(eq(scheduleDays.id, id));
     } else if (entity === "panel") {
@@ -567,8 +576,6 @@ export async function deleteScheduleEntityAction(
     refreshSchedule();
     return { success: "Записът е изтрит." };
   } catch (error) {
-    return {
-      error: error instanceof Error ? error.message : "Записът не беше изтрит.",
-    };
+    return mutationErrorResult(error, "Записът не беше изтрит.");
   }
 }

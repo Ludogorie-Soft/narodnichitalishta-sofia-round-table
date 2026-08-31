@@ -76,7 +76,9 @@ describe("typed locale dictionaries", () => {
   it("returns language-specific status labels", () => {
     expect(getStatusLabel("bg", "to_be_confirmed")).toBe("За потвърждение");
     expect(getStatusLabel("en", "to_be_confirmed")).toBe("To be confirmed");
-    expect(getDictionary("bg").skip).toBe("Към основното съдържание");
-    expect(getDictionary("en").skip).toBe("Skip to main content");
+    expect(getDictionary("bg").header.registration).toBe("Регистрация");
+    expect(getDictionary("en").header.registration).toBe("Registration");
+    expect(getDictionary("bg").registration.prompt).toContain("18.09");
+    expect(getDictionary("en").registration.prompt).toContain("18 September");
   });
 });

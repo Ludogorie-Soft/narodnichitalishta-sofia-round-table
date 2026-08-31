@@ -18,6 +18,10 @@ export type Dictionary = {
     ecosystem: string;
     logo: string;
     opensInNewTab: string;
+    registration: string;
+  };
+  registration: {
+    prompt: string;
   };
   language: {
     switchTo: string;
@@ -88,6 +92,11 @@ export const dictionaries: Record<Locale, Dictionary> = {
       ecosystem: "Народни читалища",
       logo: "Лого на Фондация „Народни читалища“",
       opensInNewTab: "отваря се в нов раздел",
+      registration: "Регистрация",
+    },
+    registration: {
+      prompt:
+        "Можете да се регистрирате за присъствие на 18.09 на следния линк:",
     },
     language: {
       switchTo: "View this section in English",
@@ -163,6 +172,11 @@ export const dictionaries: Record<Locale, Dictionary> = {
       ecosystem: "Narodni Chitalishta",
       logo: "Narodni Chitalishta Foundation logo",
       opensInNewTab: "opens in a new tab",
+      registration: "Registration",
+    },
+    registration: {
+      prompt:
+        "You can register to attend on 18 September at the following link:",
     },
     language: {
       switchTo: "Вижте раздела на български",

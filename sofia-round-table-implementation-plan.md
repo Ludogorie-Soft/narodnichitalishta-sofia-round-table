@@ -272,9 +272,9 @@ docs/
 - [ ] Self-host Wix Madefor Display and Wix Madefor Text, including Cyrillic subsets and licenses.
 - [ ] Use Wix Madefor Display for headings and Wix Madefor Text for body content.
 - [x] Define tokens for white, near-black `#333333`, conference dark green, conference pink, muted gray, borders, focus ring, spacing, radii, and shadows.
-- [ ] Add the restrained orange token after an approved source color is supplied.
+- [x] Add the restrained orange token after an approved source color is supplied.
 - [x] Sample the exact green and pink values from the approved source artwork instead of estimating them.
-- [ ] Sample the exact orange value after approved source artwork containing orange is supplied.
+- [x] Sample the exact orange value after approved source artwork containing orange is supplied.
 - [x] Preserve the black Народни читалища branding and current clean white presentation.
 - [x] Preserve generous whitespace but remove the excessive vertical gaps on the current pages.
 - [x] Use a centered content width suitable for long Bulgarian and English text.
@@ -359,19 +359,19 @@ docs/
 
 ## 18. Phase 11 — Security and integrity
 
-- [ ] Validate environment variables at startup and fail safely when required values are missing.
-- [ ] Verify a session inside every mutation, not only in middleware.
-- [ ] Keep authorization server-owned; never trust a client-provided role or user ID.
-- [ ] Use parameterized ORM queries only.
-- [ ] Sanitize stored rich text and link protocols before rendering.
-- [ ] Add Content Security Policy, Referrer Policy, X-Content-Type-Options, and frame-ancestor protections.
-- [ ] Restrict accepted origins for authenticated actions.
-- [ ] Avoid exposing stack traces, database errors, or secrets to browsers.
-- [ ] Redact secrets and personal data from logs.
-- [ ] Apply login and sensitive mutation rate limits.
-- [ ] Add dependency and secret scanning in CI where available.
-- [ ] Test protected mutations without a session and with a disabled account.
-- [ ] Document account recovery when only one administrator remains.
+- [x] Validate environment variables at startup and fail safely when required values are missing.
+- [x] Verify a session inside every mutation, not only in middleware.
+- [x] Keep authorization server-owned; never trust a client-provided role or user ID.
+- [x] Use parameterized ORM queries only.
+- [x] Sanitize stored rich text and link protocols before rendering.
+- [x] Add Content Security Policy, Referrer Policy, X-Content-Type-Options, and frame-ancestor protections.
+- [x] Restrict accepted origins for authenticated actions.
+- [x] Avoid exposing stack traces, database errors, or secrets to browsers.
+- [x] Redact secrets and personal data from logs.
+- [x] Apply login and sensitive mutation rate limits.
+- [x] Add dependency and secret scanning in CI where available.
+- [x] Test protected mutations without a session and with a disabled account.
+- [x] Document account recovery when only one administrator remains.
 
 ## 19. Phase 12 — Testing and quality gates
 

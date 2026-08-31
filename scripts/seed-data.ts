@@ -49,9 +49,7 @@ export const contentSectionSeeds = [
     contentBg: doc(
       "От локални партньорства към по-широко европейско измерение.",
     ),
-    contentEn: doc(
-      "From Local Partnerships to a Broader European Dimension.",
-    ),
+    contentEn: doc("From Local Partnerships to a Broader European Dimension."),
     sortOrder: 0,
     visible: true,
   },

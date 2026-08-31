@@ -3,6 +3,7 @@ import "server-only";
 import { asc } from "drizzle-orm";
 import { getDb } from "@/db";
 import { contentSections } from "@/db/schema";
+import { richTextParagraphs, textToSanitizedDocument } from "@/lib/security";
 
 export type AdminContentSection = {
   id: string;
@@ -15,38 +16,11 @@ export type AdminContentSection = {
 };
 
 function documentToText(value: unknown): string {
-  if (!value || typeof value !== "object" || !("content" in value)) {
-    return "";
-  }
-  const content = value.content;
-  if (!Array.isArray(content)) {
-    return "";
-  }
-
-  return content
-    .flatMap((node) => {
-      if (
-        node &&
-        typeof node === "object" &&
-        "text" in node &&
-        typeof node.text === "string"
-      ) {
-        return [node.text];
-      }
-      return [];
-    })
-    .join("\n\n");
+  return richTextParagraphs(value).join("\n\n");
 }
 
 export function textToDocument(value: string) {
-  return {
-    type: "doc" as const,
-    content: value
-      .split(/\n\s*\n/)
-      .map((text) => text.trim())
-      .filter(Boolean)
-      .map((text) => ({ type: "paragraph" as const, text })),
-  };
+  return textToSanitizedDocument(value);
 }
 
 export async function listAdminContentSections(): Promise<

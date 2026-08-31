@@ -104,7 +104,9 @@ async function main() {
     .onConflictDoNothing()
     .returning({ itemId: scheduleItemSpeakers.itemId });
 
-  const heroSeed = contentSectionSeeds.find((section) => section.slug === "hero");
+  const heroSeed = contentSectionSeeds.find(
+    (section) => section.slug === "hero",
+  );
   if (heroSeed) {
     await db
       .update(contentSections)
@@ -119,10 +121,7 @@ async function main() {
   }
 
   for (const logo of partnerLogoMediaSeeds) {
-    await db
-      .insert(mediaAssets)
-      .values(logo)
-      .onConflictDoNothing();
+    await db.insert(mediaAssets).values(logo).onConflictDoNothing();
     await db
       .update(mediaAssets)
       .set({

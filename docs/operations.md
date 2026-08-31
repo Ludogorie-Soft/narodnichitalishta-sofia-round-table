@@ -42,3 +42,21 @@ After five minutes idle, the compute suspends. The next request waits for a cold
 ### Monitoring
 
 Watch Neon’s project dashboard for storage, CU-hours, and transfer. Set a calendar reminder before the conference to confirm the database is not near Free-plan caps.
+
+## Security
+
+Environment variables are validated when the Node.js server starts. Missing `DATABASE_URL` or `BETTER_AUTH_SECRET` (32+ characters) stops the process. Production also requires `BETTER_AUTH_URL` and `NEXT_PUBLIC_SITE_URL`. Do not put secrets in `NEXT_PUBLIC_*` variables.
+
+Every admin mutation checks the Better Auth session on the server, ignores client-supplied user IDs or roles, and accepts only trusted origins. Login is rate-limited by Better Auth (5 attempts / 60 seconds). Password changes, account create/disable, and deletions have a stricter in-process limit.
+
+Stored rich text is reduced to paragraphs before save and render. Public links allow `http`, `https`, `mailto`, in-page hashes, and same-site paths only.
+
+## Account recovery
+
+There is no public password-reset email flow. Recovery depends on having at least one other active administrator, or on CLI access to the database.
+
+1. **Another administrator is still active.** Sign in at `/admin/users` and set a temporary password for the locked account. That action ends the user’s existing sessions. Share the temporary password out of band and ask them to change it immediately under **Моята парола**.
+2. **The last remaining administrator is locked out.** Public signup stays disabled. On a trusted machine with `DATABASE_URL` and `BETTER_AUTH_SECRET`, run `npm run admin:create` and create a new administrator. Sign in with that account, then reset the original user’s password from `/admin/users`.
+3. **Do not disable the last active administrator.** The Users screen blocks that action. If an account must be replaced, create the replacement first.
+
+Keep `BETTER_AUTH_SECRET` and the Neon connection string in the NGO’s private secret store. Anyone with both can create an administrator from the CLI, so treat them as production credentials.

@@ -6,6 +6,9 @@
   --conference-green: #013e33;
   --conference-green-soft: #edf5f2;
   --conference-pink: #be7db5;
+  --conference-orange: #ea7034;
+  --conference-orange-dark: #d45f28;
+  --conference-orange-soft: #fdf3ec;
   --muted: #686868;
   --border: #dddddd;
   --focus-ring: #013e33;
@@ -19,6 +22,9 @@
   --color-conference-green: var(--conference-green);
   --color-conference-green-soft: var(--conference-green-soft);
   --color-conference-pink: var(--conference-pink);
+  --color-conference-orange: var(--conference-orange);
+  --color-conference-orange-dark: var(--conference-orange-dark);
+  --color-conference-orange-soft: var(--conference-orange-soft);
   --color-muted: var(--muted);
   --color-border: var(--border);
   --font-display: "Segoe UI", "Arial Nova", Arial, system-ui, sans-serif;

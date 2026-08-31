@@ -1,4 +1,7 @@
-/** Server and CLI only. Do not import from Client Components. */
+/** Server and CLI only. Do not import from Client Components.
+ * All application queries go through Drizzle parameterized APIs.
+ * Do not interpolate user input into SQL strings.
+ */
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import * as schema from "./schema";

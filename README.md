@@ -104,6 +104,8 @@ It prompts for email, display name, and password (minimum 12 characters). Confir
 
 Then open [http://localhost:3000/admin/login](http://localhost:3000/admin/login).
 
+If the last administrator is locked out, create a replacement with `npm run admin:create` from a trusted machine that has `DATABASE_URL` and `BETTER_AUTH_SECRET`. Details are in `docs/operations.md`.
+
 ## Testing
 
 ```bash
@@ -119,7 +121,7 @@ Playwright (install browsers once with `npx playwright install chromium`):
 npm run test:e2e
 ```
 
-CI runs lint, format check, typecheck, unit tests, and the production build on each pull request and on `main`.
+CI runs lint, format check, typecheck, unit tests, dependency audit, secret scan, and the production build on each pull request and on `main`.
 
 ## Deployment
 

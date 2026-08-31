@@ -1,0 +1,9 @@
+title = "Sofia Round Table"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Documented CI placeholders, not production secrets"
+regexes = ['''ci-placeholder-secret-not-for-production-use''']
+paths = ['''^\.env\.example$''']

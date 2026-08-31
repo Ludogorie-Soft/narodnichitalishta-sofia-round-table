@@ -11,6 +11,9 @@ test("Bulgarian home renders conference title", async ({ page }) => {
   await expect(page.locator("#about")).toBeAttached();
   await expect(page.locator("#program")).toBeAttached();
   await expect(page.locator("#organizers")).toBeAttached();
+  await expect(
+    page.getByText("Можете да се регистрирате за присъствие на 18.09").first(),
+  ).toBeVisible();
 });
 
 test("hero fits within a 13-inch laptop viewport", async ({ page }) => {
@@ -87,6 +90,12 @@ test("mobile navigation exposes the section links", async ({ page }) => {
   await expect(
     page.getByRole("link", { name: "Програма" }).last(),
   ).toBeVisible();
+  const registrationLinks = page.getByRole("link", { name: /Регистрация/ });
+  await expect(registrationLinks.first()).toHaveAttribute(
+    "href",
+    "https://ec.europa.eu/eusurvey/runner/Conference18092026",
+  );
+  await expect(registrationLinks.first()).toHaveAttribute("target", "_blank");
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= window.innerWidth,

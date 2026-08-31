@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
 import { localeFromPathname } from "@/lib/i18n";
+import { applySecurityHeaders } from "@/lib/security-headers";
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -17,14 +18,18 @@ export function proxy(request: NextRequest) {
   if (isAdmin && !isLogin && !hasSessionCookie) {
     const login = new URL("/admin/login", request.url);
     login.searchParams.set("from", pathname);
-    return NextResponse.redirect(login);
+    const redirect = NextResponse.redirect(login);
+    applySecurityHeaders(redirect.headers);
+    return redirect;
   }
 
-  return NextResponse.next({
+  const response = NextResponse.next({
     request: {
       headers: requestHeaders,
     },
   });
+  applySecurityHeaders(response.headers);
+  return response;
 }
 
 export const config = {

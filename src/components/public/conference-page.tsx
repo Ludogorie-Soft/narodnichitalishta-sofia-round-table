@@ -4,6 +4,7 @@ import { ProgramSchedule } from "./program-schedule";
 import { PublicFooter } from "./public-footer";
 import { PublicHeader } from "./public-header";
 import { PartnerLogo, SectionHeading } from "./public-ui";
+import { RegistrationNotice } from "./registration-cta";
 import { SkipLink } from "@/components/ui/skip-link";
 import { getPublicSiteData } from "@/db/queries/public-site";
 import { getDictionary } from "@/lib/dictionaries";
@@ -84,6 +85,12 @@ export async function ConferencePage({ locale }: { locale: Locale }) {
       <main id="main-content" tabIndex={-1}>
         <ConferenceHero hero={heroContent} locale={locale} />
 
+        <div className="border-b border-conference-orange/25 bg-conference-orange-soft px-5 py-5 sm:px-8">
+          <div className="mx-auto w-full max-w-6xl">
+            <RegistrationNotice locale={locale} />
+          </div>
+        </div>
+
         <section
           className="scroll-mt-28 px-5 py-20 sm:px-8 sm:py-28"
           id="about"
@@ -99,6 +106,9 @@ export async function ConferencePage({ locale }: { locale: Locale }) {
               {introductionParagraphs.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
+            </div>
+            <div className="mt-10">
+              <RegistrationNotice locale={locale} />
             </div>
           </div>
         </section>
@@ -116,6 +126,9 @@ export async function ConferencePage({ locale }: { locale: Locale }) {
               locale={locale}
               timezone={data.settings.timezone}
             />
+            <div className="mt-10">
+              <RegistrationNotice locale={locale} />
+            </div>
           </div>
         </section>
 
@@ -167,6 +180,9 @@ export async function ConferencePage({ locale }: { locale: Locale }) {
                 );
               })}
             </div>
+            <div className="mt-10">
+              <RegistrationNotice locale={locale} />
+            </div>
           </div>
         </section>
 
@@ -197,6 +213,9 @@ export async function ConferencePage({ locale }: { locale: Locale }) {
                     </a>
                   </p>
                 ) : null}
+              </div>
+              <div className="mt-10">
+                <RegistrationNotice locale={locale} />
               </div>
             </div>
           </section>

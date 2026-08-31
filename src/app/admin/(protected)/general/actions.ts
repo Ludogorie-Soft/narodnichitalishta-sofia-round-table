@@ -8,7 +8,8 @@ import { siteSettings } from "@/db/schema";
 import { normalizeExternalUrl } from "@/lib/admin-validation";
 import { recordAudit } from "@/lib/audit";
 import { revalidatePublicSite } from "@/lib/cache";
-import { requireAdminSession } from "@/lib/session";
+import { mutationErrorResult } from "@/lib/security";
+import { requireAdminMutation } from "@/lib/session";
 
 const nullableText = z.string().trim().max(2_000);
 const schema = z.object({
@@ -46,46 +47,48 @@ export async function saveGeneralSettingsAction(
   _previous: GeneralFormState,
   formData: FormData,
 ): Promise<GeneralFormState> {
-  const session = await requireAdminSession();
-  const parsed = schema.safeParse({
-    startDate: text(formData, "startDate"),
-    endDate: text(formData, "endDate"),
-    timezone: text(formData, "timezone"),
-    cityBg: text(formData, "cityBg"),
-    cityEn: text(formData, "cityEn"),
-    venueNameBg: text(formData, "venueNameBg"),
-    venueNameEn: text(formData, "venueNameEn"),
-    venueAddressBg: text(formData, "venueAddressBg"),
-    venueAddressEn: text(formData, "venueAddressEn"),
-    mapUrl: text(formData, "mapUrl"),
-    contactEmail: text(formData, "contactEmail"),
-    facebookUrl: text(formData, "facebookUrl"),
-    linkedinUrl: text(formData, "linkedinUrl"),
-    ngoHomeUrl: text(formData, "ngoHomeUrl"),
-    chitalishtaMapUrl: text(formData, "chitalishtaMapUrl"),
-    grantsUrl: text(formData, "grantsUrl"),
-    dataUrl: text(formData, "dataUrl"),
-    footerBlurbBg: text(formData, "footerBlurbBg"),
-    footerBlurbEn: text(formData, "footerBlurbEn"),
-    copyrightBg: text(formData, "copyrightBg"),
-    copyrightEn: text(formData, "copyrightEn"),
-    venuePublished: formData.get("venuePublished") === "on",
-    englishPublished: formData.get("englishPublished") === "on",
-  });
-
-  if (!parsed.success) {
-    return { error: "Проверете задължителните полета, датите и имейла." };
-  }
-  if (parsed.data.endDate < parsed.data.startDate) {
-    return { error: "Крайната дата не може да бъде преди началната." };
-  }
   try {
-    new Intl.DateTimeFormat("en", { timeZone: parsed.data.timezone }).format();
-  } catch {
-    return { error: "Въведете валидна IANA часова зона." };
-  }
+    const session = await requireAdminMutation();
+    const parsed = schema.safeParse({
+      startDate: text(formData, "startDate"),
+      endDate: text(formData, "endDate"),
+      timezone: text(formData, "timezone"),
+      cityBg: text(formData, "cityBg"),
+      cityEn: text(formData, "cityEn"),
+      venueNameBg: text(formData, "venueNameBg"),
+      venueNameEn: text(formData, "venueNameEn"),
+      venueAddressBg: text(formData, "venueAddressBg"),
+      venueAddressEn: text(formData, "venueAddressEn"),
+      mapUrl: text(formData, "mapUrl"),
+      contactEmail: text(formData, "contactEmail"),
+      facebookUrl: text(formData, "facebookUrl"),
+      linkedinUrl: text(formData, "linkedinUrl"),
+      ngoHomeUrl: text(formData, "ngoHomeUrl"),
+      chitalishtaMapUrl: text(formData, "chitalishtaMapUrl"),
+      grantsUrl: text(formData, "grantsUrl"),
+      dataUrl: text(formData, "dataUrl"),
+      footerBlurbBg: text(formData, "footerBlurbBg"),
+      footerBlurbEn: text(formData, "footerBlurbEn"),
+      copyrightBg: text(formData, "copyrightBg"),
+      copyrightEn: text(formData, "copyrightEn"),
+      venuePublished: formData.get("venuePublished") === "on",
+      englishPublished: formData.get("englishPublished") === "on",
+    });
 
-  try {
+    if (!parsed.success) {
+      return { error: "Проверете задължителните полета, датите и имейла." };
+    }
+    if (parsed.data.endDate < parsed.data.startDate) {
+      return { error: "Крайната дата не може да бъде преди началната." };
+    }
+    try {
+      new Intl.DateTimeFormat("en", {
+        timeZone: parsed.data.timezone,
+      }).format();
+    } catch {
+      return { error: "Въведете валидна IANA часова зона." };
+    }
+
     const urlFields = {
       mapUrl: normalizeExternalUrl(parsed.data.mapUrl),
       facebookUrl: normalizeExternalUrl(parsed.data.facebookUrl),
@@ -127,11 +130,6 @@ export async function saveGeneralSettingsAction(
     revalidatePath("/admin/general");
     return { success: "Настройките са публикувани." };
   } catch (error) {
-    return {
-      error:
-        error instanceof Error
-          ? error.message
-          : "Настройките не бяха запазени.",
-    };
+    return mutationErrorResult(error, "Настройките не бяха запазени.");
   }
 }

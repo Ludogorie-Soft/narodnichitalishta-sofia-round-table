@@ -8,7 +8,8 @@ import { mediaAssets, partners } from "@/db/schema";
 import { normalizeExternalUrl } from "@/lib/admin-validation";
 import { recordAudit } from "@/lib/audit";
 import { revalidatePublicSite } from "@/lib/cache";
-import { requireAdminSession } from "@/lib/session";
+import { mutationErrorResult } from "@/lib/security";
+import { requireAdminMutation } from "@/lib/session";
 
 const partnerSchema = z.object({
   id: z.string().max(100),
@@ -31,17 +32,17 @@ export async function savePartnerAction(
   _previous: PartnerFormState,
   formData: FormData,
 ): Promise<PartnerFormState> {
-  const session = await requireAdminSession();
-  const parsed = partnerSchema.safeParse({
-    id: String(formData.get("id") ?? ""),
-    name: String(formData.get("name") ?? ""),
-    mediaId: String(formData.get("mediaId") ?? ""),
-    url: String(formData.get("url") ?? ""),
-    visible: formData.get("visible") === "on",
-  });
-  if (!parsed.success) return { error: "Името на партньора е задължително." };
-
   try {
+    const session = await requireAdminMutation();
+    const parsed = partnerSchema.safeParse({
+      id: String(formData.get("id") ?? ""),
+      name: String(formData.get("name") ?? ""),
+      mediaId: String(formData.get("mediaId") ?? ""),
+      url: String(formData.get("url") ?? ""),
+      visible: formData.get("visible") === "on",
+    });
+    if (!parsed.success) return { error: "Името на партньора е задължително." };
+
     const db = getDb();
     const url = normalizeExternalUrl(parsed.data.url);
     const mediaId = parsed.data.mediaId || null;
@@ -102,15 +103,12 @@ export async function savePartnerAction(
     refreshPartners();
     return { success: "Партньорът е публикуван." };
   } catch (error) {
-    return {
-      error:
-        error instanceof Error ? error.message : "Партньорът не беше запазен.",
-    };
+    return mutationErrorResult(error, "Партньорът не беше запазен.");
   }
 }
 
 export async function movePartnerAction(formData: FormData) {
-  const session = await requireAdminSession();
+  const session = await requireAdminMutation();
   const id = String(formData.get("id") ?? "");
   const direction = String(formData.get("direction") ?? "");
   if (!id || !["up", "down"].includes(direction)) return;
@@ -149,24 +147,28 @@ export async function deletePartnerAction(
   _previous: PartnerFormState,
   formData: FormData,
 ): Promise<PartnerFormState> {
-  const session = await requireAdminSession();
-  const id = String(formData.get("id") ?? "");
-  if (formData.get("confirmation") !== "DELETE") {
-    return { error: "Въведете DELETE, за да потвърдите." };
+  try {
+    const session = await requireAdminMutation({ sensitive: true });
+    const id = String(formData.get("id") ?? "");
+    if (formData.get("confirmation") !== "DELETE") {
+      return { error: "Въведете DELETE, за да потвърдите." };
+    }
+    const db = getDb();
+    const existing = await db.query.partners.findFirst({
+      where: eq(partners.id, id),
+    });
+    if (!existing) return { error: "Партньорът не беше намерен." };
+    await db.delete(partners).where(eq(partners.id, id));
+    await recordAudit({
+      actorUserId: session.user.id,
+      action: "delete",
+      entityType: "partner",
+      entityId: id,
+      summary: `Изтрит партньор „${existing.name}“.`,
+    });
+    refreshPartners();
+    return { success: "Партньорът е изтрит." };
+  } catch (error) {
+    return mutationErrorResult(error, "Партньорът не беше изтрит.");
   }
-  const db = getDb();
-  const existing = await db.query.partners.findFirst({
-    where: eq(partners.id, id),
-  });
-  if (!existing) return { error: "Партньорът не беше намерен." };
-  await db.delete(partners).where(eq(partners.id, id));
-  await recordAudit({
-    actorUserId: session.user.id,
-    action: "delete",
-    entityType: "partner",
-    entityId: id,
-    summary: `Изтрит партньор „${existing.name}“.`,
-  });
-  refreshPartners();
-  return { success: "Партньорът е изтрит." };
 }

@@ -16,6 +16,11 @@ import {
 import { PUBLIC_SITE_CACHE_TAG } from "@/lib/cache";
 import type { ScheduleItemStatus, ScheduleItemType } from "@/lib/datetime";
 import { pickLocalized, type Locale } from "@/lib/i18n";
+import {
+  richTextParagraphs,
+  sanitizeHref,
+  sanitizeMailto,
+} from "@/lib/security";
 
 type PublicSpeaker = {
   id: string;
@@ -100,29 +105,6 @@ export type PublicSiteData = {
     dataUrl: string | null;
   };
 };
-
-function richTextParagraphs(value: unknown): string[] {
-  if (!value || typeof value !== "object" || !("content" in value)) {
-    return [];
-  }
-
-  const content = (value as { content?: unknown }).content;
-  if (!Array.isArray(content)) {
-    return [];
-  }
-
-  return content.flatMap((node) => {
-    if (
-      node &&
-      typeof node === "object" &&
-      "text" in node &&
-      typeof node.text === "string"
-    ) {
-      return [node.text];
-    }
-    return [];
-  });
-}
 
 async function queryPublicSiteData(locale: Locale): Promise<PublicSiteData> {
   const db = getDb();
@@ -244,14 +226,20 @@ async function queryPublicSiteData(locale: Locale): Promise<PublicSiteData> {
 
   return {
     sections,
-    navigation: navigationRecords.map((item) => ({
-      label: locale === "bg" ? item.labelBg : item.labelEn,
-      href: item.href,
-    })),
+    navigation: navigationRecords.flatMap((item) => {
+      const href = sanitizeHref(item.href);
+      if (!href) return [];
+      return [
+        {
+          label: locale === "bg" ? item.labelBg : item.labelEn,
+          href,
+        },
+      ];
+    }),
     partners: partnerRecords.map((partner) => ({
       id: partner.id,
       name: partner.name,
-      url: partner.url,
+      url: sanitizeHref(partner.url),
       image: partner.media
         ? {
             url: partner.media.blobUrl,
@@ -318,7 +306,7 @@ async function queryPublicSiteData(locale: Locale): Promise<PublicSiteData> {
         settingsRecord.venueAddressBg,
         settingsRecord.venueAddressEn,
       ).value,
-      mapUrl: settingsRecord.mapUrl,
+      mapUrl: sanitizeHref(settingsRecord.mapUrl),
       footerBlurb:
         locale === "bg"
           ? settingsRecord.footerBlurbBg
@@ -327,13 +315,15 @@ async function queryPublicSiteData(locale: Locale): Promise<PublicSiteData> {
         locale === "bg"
           ? settingsRecord.copyrightBg
           : settingsRecord.copyrightEn?.trim() || null,
-      contactEmail: settingsRecord.contactEmail,
-      facebookUrl: settingsRecord.facebookUrl,
-      linkedinUrl: settingsRecord.linkedinUrl,
-      ngoHomeUrl: settingsRecord.ngoHomeUrl,
-      chitalishtaMapUrl: settingsRecord.chitalishtaMapUrl,
-      grantsUrl: settingsRecord.grantsUrl,
-      dataUrl: settingsRecord.dataUrl,
+      contactEmail: sanitizeMailto(settingsRecord.contactEmail)
+        ? settingsRecord.contactEmail
+        : null,
+      facebookUrl: sanitizeHref(settingsRecord.facebookUrl),
+      linkedinUrl: sanitizeHref(settingsRecord.linkedinUrl),
+      ngoHomeUrl: sanitizeHref(settingsRecord.ngoHomeUrl),
+      chitalishtaMapUrl: sanitizeHref(settingsRecord.chitalishtaMapUrl),
+      grantsUrl: sanitizeHref(settingsRecord.grantsUrl),
+      dataUrl: sanitizeHref(settingsRecord.dataUrl),
     },
   };
 }

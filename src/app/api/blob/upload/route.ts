@@ -1,13 +1,31 @@
 import { del, put } from "@vercel/blob";
-import { getAdminSession } from "@/lib/session";
 import { createMediaAsset } from "@/lib/media";
 import { safeMediaPathname, validateMediaUpload } from "@/lib/media-validation";
+import {
+  AuthorizationError,
+  OriginError,
+  RateLimitError,
+  logServerError,
+  publicErrorMessage,
+} from "@/lib/security";
+import { requireAdminApi } from "@/lib/session";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
-  const session = await getAdminSession();
-  if (!session?.user || session.user.active === false) {
+  let session: Awaited<ReturnType<typeof requireAdminApi>>;
+  try {
+    session = await requireAdminApi();
+  } catch (error) {
+    if (error instanceof OriginError) {
+      return Response.json({ error: "Forbidden." }, { status: 403 });
+    }
+    if (error instanceof RateLimitError) {
+      return Response.json({ error: "Too many requests." }, { status: 429 });
+    }
+    if (!(error instanceof AuthorizationError)) {
+      logServerError(error, "blob-upload-auth");
+    }
     return Response.json({ error: "Unauthorized." }, { status: 401 });
   }
 
@@ -34,8 +52,7 @@ export async function POST(request: Request) {
   } catch (error) {
     return Response.json(
       {
-        error:
-          error instanceof Error ? error.message : "The image is not valid.",
+        error: publicErrorMessage(error, "The image is not valid."),
       },
       { status: 400 },
     );
@@ -53,7 +70,8 @@ export async function POST(request: Request) {
         cacheControlMaxAge: 60 * 60 * 24 * 30,
       },
     );
-  } catch {
+  } catch (error) {
+    logServerError(error, "blob-upload");
     return Response.json(
       { error: "The image could not be uploaded to Blob storage." },
       { status: 502 },
@@ -73,7 +91,8 @@ export async function POST(request: Request) {
       altEn: validated.altEn,
       actorUserId: session.user.id,
     });
-  } catch {
+  } catch (error) {
+    logServerError(error, "blob-upload-save");
     await del(blob.pathname).catch(() => undefined);
     return Response.json(
       { error: "The upload was not saved. Please try again." },

@@ -1,8 +1,10 @@
 import type { ReactNode } from "react";
 import { BrandLogo } from "./brand-logo";
+import { RegistrationButton } from "./registration-cta";
 import type { PublicSiteData } from "@/db/queries/public-site";
 import { getDictionary } from "@/lib/dictionaries";
 import type { Locale } from "@/lib/i18n";
+import { sanitizeMailto } from "@/lib/security";
 
 function isExternalHref(href: string) {
   return /^https?:\/\//i.test(href);
@@ -31,6 +33,7 @@ export function PublicFooter({
 }) {
   const text = getDictionary(locale).footer;
   const opensInNewTab = getDictionary(locale).header.opensInNewTab;
+  const contactHref = sanitizeMailto(settings?.contactEmail);
   const links = [
     ...(navigation ?? []),
     {
@@ -58,6 +61,9 @@ export function PublicFooter({
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-neutral-600">
             {settings?.footerBlurb || text.summary}
           </p>
+          <div className="mt-5">
+            <RegistrationButton locale={locale} />
+          </div>
         </div>
 
         <div>
@@ -83,11 +89,9 @@ export function PublicFooter({
             {text.contact}
           </h2>
           <ul className="mt-3 space-y-2 text-sm">
-            {settings?.contactEmail ? (
+            {contactHref ? (
               <li>
-                <a href={`mailto:${settings.contactEmail}`}>
-                  {settings.contactEmail}
-                </a>
+                <a href={contactHref}>{settings?.contactEmail}</a>
               </li>
             ) : null}
             {settings?.facebookUrl ? (

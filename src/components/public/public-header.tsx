@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BrandLogo } from "./brand-logo";
 import { LanguageSwitcher } from "./language-switcher";
+import { RegistrationButton } from "./registration-cta";
 import { getDictionary } from "@/lib/dictionaries";
 import type { Locale } from "@/lib/i18n";
 
@@ -58,7 +59,7 @@ export function PublicHeader({
 
   return (
     <header className="sticky top-0 z-50 border-b border-black/10 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex min-h-20 w-full max-w-7xl items-center gap-4 px-5 sm:px-8">
+      <div className="mx-auto flex min-h-20 w-full max-w-7xl items-center gap-3 px-5 sm:gap-4 sm:px-8">
         <Link
           aria-label={copy.home}
           className="mr-auto rounded-sm"
@@ -74,6 +75,9 @@ export function PublicHeader({
           <NavigationLinks locale={locale} navigation={navigation} />
         </nav>
 
+        <div className="hidden sm:block">
+          <RegistrationButton compact locale={locale} />
+        </div>
         <LanguageSwitcher locale={locale} />
 
         <details className="group relative lg:hidden">
@@ -85,6 +89,9 @@ export function PublicHeader({
             className="absolute right-0 top-12 flex w-64 flex-col rounded-xl border border-neutral-200 bg-white p-3 shadow-xl"
           >
             <NavigationLinks locale={locale} navigation={navigation} />
+            <div className="mt-3 sm:hidden">
+              <RegistrationButton locale={locale} />
+            </div>
           </nav>
         </details>
       </div>
