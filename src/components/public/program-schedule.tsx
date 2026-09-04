@@ -210,6 +210,14 @@ export function ProgramSchedule({
                 >
                   {formatConferenceDate(day.date, locale)}
                 </h3>
+                {day.subtitle ? (
+                  <p
+                    className="mt-2 text-base font-semibold text-neutral-800"
+                    lang={day.contentLocale}
+                  >
+                    {day.subtitle}
+                  </p>
+                ) : null}
                 <p className="mt-2 text-sm text-neutral-600">
                   {text.timezone}: {timezone}
                 </p>

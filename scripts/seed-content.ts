@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-import { eq } from "drizzle-orm";
+import { eq, notInArray } from "drizzle-orm";
 import { getDb } from "../src/db";
 import {
   contentSections,
@@ -42,54 +42,154 @@ async function main() {
   }
 
   const db = getDb();
-  const inserted = {
-    settings: await db
-      .insert(siteSettings)
-      .values(siteSettingsSeed)
-      .onConflictDoNothing()
-      .returning({ id: siteSettings.id }),
-    content: await db
+  const now = new Date();
+
+  await db
+    .insert(siteSettings)
+    .values(siteSettingsSeed)
+    .onConflictDoUpdate({
+      target: siteSettings.id,
+      set: {
+        timezone: siteSettingsSeed.timezone,
+        startDate: siteSettingsSeed.startDate,
+        endDate: siteSettingsSeed.endDate,
+        cityBg: siteSettingsSeed.cityBg,
+        cityEn: siteSettingsSeed.cityEn,
+        venueNameBg: siteSettingsSeed.venueNameBg,
+        venueNameEn: siteSettingsSeed.venueNameEn,
+        venueAddressBg: siteSettingsSeed.venueAddressBg,
+        venueAddressEn: siteSettingsSeed.venueAddressEn,
+        mapUrl: siteSettingsSeed.mapUrl,
+        venuePublished: siteSettingsSeed.venuePublished,
+        updatedAt: now,
+      },
+    });
+
+  for (const section of contentSectionSeeds) {
+    await db
       .insert(contentSections)
-      .values([...contentSectionSeeds])
-      .onConflictDoNothing()
-      .returning({ id: contentSections.id }),
-    navigation: await db
+      .values(section)
+      .onConflictDoUpdate({
+        target: contentSections.id,
+        set: {
+          slug: section.slug,
+          headingBg: section.headingBg,
+          headingEn: section.headingEn,
+          contentBg: section.contentBg,
+          contentEn: section.contentEn,
+          sortOrder: section.sortOrder,
+          visible: section.visible,
+          updatedAt: now,
+        },
+      });
+  }
+
+  for (const item of navigationItemSeeds) {
+    await db
       .insert(navigationItems)
-      .values([...navigationItemSeeds])
-      .onConflictDoNothing()
-      .returning({ id: navigationItems.id }),
-    partners: await db
-      .insert(partners)
-      .values([...partnerSeeds])
-      .onConflictDoNothing()
-      .returning({ id: partners.id }),
-    days: await db
+      .values(item)
+      .onConflictDoUpdate({
+        target: navigationItems.id,
+        set: {
+          labelBg: item.labelBg,
+          labelEn: item.labelEn,
+          href: item.href,
+          sortOrder: item.sortOrder,
+          visible: item.visible,
+          updatedAt: now,
+        },
+      });
+  }
+
+  for (const day of scheduleDaySeeds) {
+    await db
       .insert(scheduleDays)
-      .values([...scheduleDaySeeds])
-      .onConflictDoNothing()
-      .returning({ id: scheduleDays.id }),
-    panels: await db
+      .values(day)
+      .onConflictDoUpdate({
+        target: scheduleDays.id,
+        set: {
+          date: day.date,
+          titleBg: day.titleBg,
+          titleEn: day.titleEn,
+          subtitleBg: day.subtitleBg,
+          subtitleEn: day.subtitleEn,
+          sortOrder: day.sortOrder,
+          visible: day.visible,
+          updatedAt: now,
+        },
+      });
+  }
+
+  for (const panel of schedulePanelSeeds) {
+    await db
       .insert(schedulePanels)
-      .values([...schedulePanelSeeds])
-      .onConflictDoNothing()
-      .returning({ id: schedulePanels.id }),
-    speakers: await db
+      .values(panel)
+      .onConflictDoUpdate({
+        target: schedulePanels.id,
+        set: {
+          dayId: panel.dayId,
+          startTime: panel.startTime,
+          endTime: panel.endTime,
+          titleBg: panel.titleBg,
+          titleEn: panel.titleEn,
+          descriptionBg: panel.descriptionBg,
+          descriptionEn: panel.descriptionEn,
+          sortOrder: panel.sortOrder,
+          visible: panel.visible,
+          updatedAt: now,
+        },
+      });
+  }
+
+  for (const speaker of speakerSeeds) {
+    await db
       .insert(speakers)
-      .values(speakerSeeds)
-      .onConflictDoNothing()
-      .returning({ id: speakers.id }),
-  };
+      .values(speaker)
+      .onConflictDoUpdate({
+        target: speakers.id,
+        set: {
+          nameBg: speaker.nameBg,
+          nameEn: speaker.nameEn,
+          affiliationBg: speaker.affiliationBg,
+          affiliationEn: speaker.affiliationEn,
+          updatedAt: now,
+        },
+      });
+  }
 
   const itemRows = scheduleItemSeeds.map((seed) => {
     const { speakerIds, ...item } = seed;
     void speakerIds;
     return item;
   });
-  const insertedItems = await db
-    .insert(scheduleItems)
-    .values(itemRows)
-    .onConflictDoNothing()
-    .returning({ id: scheduleItems.id });
+  const seedItemIds = itemRows.map((item) => item.id);
+  const seedSpeakerIds = speakerSeeds.map((speaker) => speaker.id);
+
+  for (const item of itemRows) {
+    await db
+      .insert(scheduleItems)
+      .values(item)
+      .onConflictDoUpdate({
+        target: scheduleItems.id,
+        set: {
+          dayId: item.dayId,
+          panelId: item.panelId,
+          startTime: item.startTime,
+          endTime: item.endTime,
+          itemType: item.itemType,
+          titleBg: item.titleBg,
+          titleEn: item.titleEn,
+          descriptionBg: item.descriptionBg,
+          descriptionEn: item.descriptionEn,
+          status: item.status,
+          sortOrder: item.sortOrder,
+          visible: item.visible,
+          updatedAt: now,
+        },
+      });
+  }
+
+  await db.delete(scheduleItemSpeakers);
 
   const speakerLinks = scheduleItemSeeds.flatMap((item) =>
     item.speakerIds.map((speakerId, sortOrder) => ({
@@ -98,27 +198,14 @@ async function main() {
       sortOrder,
     })),
   );
-  const insertedSpeakerLinks = await db
-    .insert(scheduleItemSpeakers)
-    .values(speakerLinks)
-    .onConflictDoNothing()
-    .returning({ itemId: scheduleItemSpeakers.itemId });
-
-  const heroSeed = contentSectionSeeds.find(
-    (section) => section.slug === "hero",
-  );
-  if (heroSeed) {
-    await db
-      .update(contentSections)
-      .set({
-        headingBg: heroSeed.headingBg,
-        headingEn: heroSeed.headingEn,
-        contentBg: heroSeed.contentBg,
-        contentEn: heroSeed.contentEn,
-        updatedAt: new Date(),
-      })
-      .where(eq(contentSections.id, heroSeed.id));
+  if (speakerLinks.length > 0) {
+    await db.insert(scheduleItemSpeakers).values(speakerLinks);
   }
+
+  await db
+    .delete(scheduleItems)
+    .where(notInArray(scheduleItems.id, seedItemIds));
+  await db.delete(speakers).where(notInArray(speakers.id, seedSpeakerIds));
 
   for (const logo of partnerLogoMediaSeeds) {
     await db.insert(mediaAssets).values(logo).onConflictDoNothing();
@@ -132,27 +219,23 @@ async function main() {
         height: logo.height,
         altBg: logo.altBg,
         altEn: logo.altEn,
-        updatedAt: new Date(),
+        updatedAt: now,
       })
       .where(eq(mediaAssets.id, logo.id));
   }
 
   for (const partner of partnerSeeds) {
+    await db.insert(partners).values(partner).onConflictDoNothing();
     await db
       .update(partners)
       .set({
         mediaId: partner.mediaId,
-        updatedAt: new Date(),
+        updatedAt: now,
       })
       .where(eq(partners.id, partner.id));
   }
 
-  const insertedCount =
-    Object.values(inserted).reduce((total, rows) => total + rows.length, 0) +
-    insertedItems.length +
-    insertedSpeakerLinks.length;
-
-  console.log(`Seed complete. Inserted ${insertedCount} new records.`);
+  console.log("Seed complete. Schedule, venue, and public copy were synced.");
   if (warnings.length > 0) {
     console.warn(
       `${warnings.length} expected translation warning(s) remain in the temporary English draft:`,

@@ -3,6 +3,7 @@ import {
   scheduleDaySeeds,
   scheduleItemSeeds,
   schedulePanelSeeds,
+  speakerSeeds,
 } from "../../scripts/seed-data";
 import { analyzeSeedData } from "../../scripts/seed-report";
 
@@ -10,13 +11,26 @@ describe("conference seed data", () => {
   it("contains both days, all panels, and the full Bulgarian schedule", () => {
     expect(scheduleDaySeeds).toHaveLength(2);
     expect(schedulePanelSeeds).toHaveLength(3);
-    expect(scheduleItemSeeds).toHaveLength(21);
+    expect(scheduleItemSeeds).toHaveLength(20);
     expect(scheduleItemSeeds.some((item) => item.itemType === "visit")).toBe(
       true,
     );
     expect(scheduleItemSeeds.some((item) => item.itemType === "closing")).toBe(
       true,
     );
+    expect(
+      scheduleItemSeeds.some((item) => item.id === "item-heart-of-chitalishte"),
+    ).toBe(true);
+    expect(
+      scheduleItemSeeds.some((item) => item.id === "item-day-2-lunch"),
+    ).toBe(false);
+    expect(
+      speakerSeeds.some((speaker) => speaker.id === "speaker-evtim-miloshev"),
+    ).toBe(true);
+    expect(
+      speakerSeeds.some((speaker) => speaker.id === "speaker-ivo-hristov"),
+    ).toBe(false);
+    expect(scheduleDaySeeds[1]?.subtitleBg).toContain("международните");
   });
 
   it("has no invalid times, overlaps, duplicate IDs, or orphan references", () => {

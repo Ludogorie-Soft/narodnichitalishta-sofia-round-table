@@ -48,6 +48,10 @@ function minutes(time: string): number {
   return Number(match[1]) * 60 + Number(match[2]);
 }
 
+function missingText(value: string | null | undefined): boolean {
+  return !value?.trim();
+}
+
 export function analyzeSeedData(): SeedIssue[] {
   const issues: SeedIssue[] = [
     ...duplicateIdIssues("content", contentSectionSeeds),
@@ -61,7 +65,10 @@ export function analyzeSeedData(): SeedIssue[] {
   const speakerIds = new Set<string>(speakerSeeds.map((speaker) => speaker.id));
 
   for (const day of scheduleDaySeeds) {
-    if (!day.titleEn || !day.subtitleEn) {
+    if (
+      missingText(day.titleEn) ||
+      (!missingText(day.subtitleBg) && missingText(day.subtitleEn))
+    ) {
       issues.push({
         severity: "warning",
         code: "missing_translation",

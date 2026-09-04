@@ -229,6 +229,7 @@ async function queryPublicSiteData(locale: Locale): Promise<PublicSiteData> {
     navigation: navigationRecords.flatMap((item) => {
       const href = sanitizeHref(item.href);
       if (!href) return [];
+      if (href === "#venue" && !settingsRecord?.venuePublished) return [];
       return [
         {
           label: locale === "bg" ? item.labelBg : item.labelEn,
@@ -330,7 +331,7 @@ async function queryPublicSiteData(locale: Locale): Promise<PublicSiteData> {
 
 export const getPublicSiteData = unstable_cache(
   queryPublicSiteData,
-  ["public-site-data"],
+  ["public-site-data", "schedule-fin"],
   {
     revalidate: 60 * 60,
     tags: [PUBLIC_SITE_CACHE_TAG],

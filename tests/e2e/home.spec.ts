@@ -12,7 +12,7 @@ test("Bulgarian home renders conference title", async ({ page }) => {
   await expect(page.locator("#program")).toBeAttached();
   await expect(page.locator("#organizers")).toBeAttached();
   await expect(
-    page.getByText("Можете да се регистрирате за присъствие на 18.09").first(),
+    page.getByText("За да присъствате на конференцията").first(),
   ).toBeVisible();
 });
 
@@ -54,6 +54,11 @@ test("Bulgarian program renders both structured days", async ({ page }) => {
   ).toHaveAttribute("href", "#program-day-day-2026-09-19");
   await expect(page.getByText("За потвърждение").first()).toBeVisible();
   await expect(page.getByText("Юрий Вълковски")).toBeVisible();
+  await expect(page.getByText("Евтим Милошев")).toBeVisible();
+  await expect(page.getByText("„Сърцето на читалището“")).toBeVisible();
+  await expect(page.getByText("Само за международните гости")).toBeVisible();
+  await expect(page.locator("#venue")).toBeAttached();
+  await expect(page.getByText("Дом на Европа").first()).toBeVisible();
 });
 
 test("English program identifies untranslated source entries", async ({

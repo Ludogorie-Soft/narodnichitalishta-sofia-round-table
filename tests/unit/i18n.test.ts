@@ -78,7 +78,11 @@ describe("typed locale dictionaries", () => {
     expect(getStatusLabel("en", "to_be_confirmed")).toBe("To be confirmed");
     expect(getDictionary("bg").header.registration).toBe("Регистрация");
     expect(getDictionary("en").header.registration).toBe("Registration");
-    expect(getDictionary("bg").registration.prompt).toContain("18.09");
-    expect(getDictionary("en").registration.prompt).toContain("18 September");
+    expect(getDictionary("bg").registration.prompt).toContain(
+      "трябва да се регистрирате",
+    );
+    expect(getDictionary("en").registration.prompt).toContain("must register");
+    expect(getDictionary("bg").registration.note).toContain("изчерпването");
+    expect(getDictionary("en").registration.note).toContain("limited");
   });
 });

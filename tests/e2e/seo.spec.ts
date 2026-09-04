@@ -28,9 +28,13 @@ test("Bulgarian and English pages expose language metadata", async ({
   const jsonLd = JSON.parse(
     (await page.locator('script[type="application/ld+json"]').textContent()) ??
       "{}",
-  ) as { "@type": string; location?: { address?: { streetAddress?: string } } };
+  ) as {
+    "@type": string;
+    location?: { name?: string; address?: { streetAddress?: string } };
+  };
   expect(jsonLd["@type"]).toBe("Event");
-  expect(jsonLd.location?.address?.streetAddress).toBeUndefined();
+  expect(jsonLd.location?.name).toBe("Дом на Европа");
+  expect(jsonLd.location?.address?.streetAddress).toContain("Раковски");
 
   await page.goto("/en");
   await expect(page).toHaveTitle(/Sofia 2026/);

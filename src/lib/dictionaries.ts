@@ -22,6 +22,7 @@ export type Dictionary = {
   };
   registration: {
     prompt: string;
+    note: string;
   };
   language: {
     switchTo: string;
@@ -96,7 +97,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
     },
     registration: {
       prompt:
-        "Можете да се регистрирате за присъствие на 18.09 на следния линк:",
+        "За да присъствате на конференцията, трябва да се регистрирате на",
+      note: "Важи до изчерпването на местата в залата.",
     },
     language: {
       switchTo: "View this section in English",
@@ -113,7 +115,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       eyebrow: "Bridge Makers · София",
       heading: "Въведение",
       paragraphs: [
-        "Българските читалища навършват 170 години. Огромна мрежа от 3597 читалища, 80% от които в селските райони, която крие огромен потенциал — точно този потенциал, който „Културният компас за Европа“ на ЕС ни призовава да разгърнем: културата като двигател на сближаване, устойчивост и конкурентоспособност във всяка територия, не само в столиците. Докато българските градове подготвят своите кандидатури за Европейска столица на културата 2032, истинският въпрос е дали селските и периферните общности ще бъдат част от тази история — а именно читалищата са мястото, където тази култура се изгражда отдолу-нагоре, всеки ден. Тази кръгла маса събира евродепутати, кметове, представители на читалища, национални и местни власти, ENCC и експерти по Европейска столица на културата, за да постави местната култура отново в центъра на териториалната амбиция на Европа. Тя е трета от поредица от шест кръгли маси по програма „Bridge Makers“ на ENCC, след срещи в Чехия и Италия, като предстои и издание в Гърция.",
+        "Българските читалища навършват 170 години. Огромна мрежа от 3597 читалища, 80% от които в селските райони, която крие огромен потенциал — точно този потенциал, който „Културният компас за Европа“ на ЕС ни призовава да разгърнем: културата като двигател на сближаване, устойчивост и конкурентоспособност във всяка територия, не само в столиците. Докато българските градове подготвят своите кандидатури за Европейска столица на културата 2032, истинският въпрос е дали селските и периферните общности ще бъдат част от тази история — а именно читалищата са мястото, където тази култура се изгражда отдолу-нагоре, всеки ден. Тази конференция събира евродепутати, кметове, представители на читалища, национални и местни власти, ENCC и експерти по Европейска столица на културата, за да постави местната култура отново в центъра на териториалната амбиция на Европа. Тя е трета от поредица от шест кръгли маси по програма „Bridge Makers“ на ENCC, след срещи в Чехия и Италия.",
       ],
     },
     program: {
@@ -175,8 +177,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
       registration: "Registration",
     },
     registration: {
-      prompt:
-        "You can register to attend on 18 September at the following link:",
+      prompt: "To attend the conference, you must register at",
+      note: "Places are limited to hall capacity.",
     },
     language: {
       switchTo: "Вижте раздела на български",
@@ -193,7 +195,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       eyebrow: "Bridge Makers · Sofia",
       heading: "Introduction",
       paragraphs: [
-        "Bulgarian community centers are celebrating their 170th anniversary. A vast network of 3,597 community centers, 80% of which are in rural areas, holds immense potential—precisely the potential that the EU’s “Cultural Compass for Europe” calls on us to unleash: culture as a driver of cohesion, sustainability, and competitiveness in every region, not just in the capitals. While Bulgarian cities are preparing their bids for the European Capital of Culture 2032, the real question is whether rural and peripheral communities will be part of this story—and it is precisely the community centers where this culture is built from the ground up, every day. This roundtable brings together Members of the European Parliament, mayors, representatives of community centers, national and local authorities, the ENCC, and experts on the European Capital of Culture to put local culture back at the center of Europe’s territorial ambition. It is the third in a series of six roundtables under the ENCC’s “Bridge Makers” program, following meetings in the Czech Republic and Italy, with an upcoming event in Greece.",
+        "Bulgarian community centers are celebrating their 170th anniversary. A vast network of 3,597 community centers, 80% of which are in rural areas, holds immense potential—precisely the potential that the EU’s “Cultural Compass for Europe” calls on us to unleash: culture as a driver of cohesion, sustainability, and competitiveness in every region, not just in the capitals. While Bulgarian cities are preparing their bids for the European Capital of Culture 2032, the real question is whether rural and peripheral communities will be part of this story—and it is precisely the community centers where this culture is built from the ground up, every day. This conference brings together Members of the European Parliament, mayors, representatives of community centers, national and local authorities, the ENCC, and experts on the European Capital of Culture to put local culture back at the center of Europe’s territorial ambition. It is the third in a series of six roundtables under the ENCC’s “Bridge Makers” program, following meetings in the Czech Republic and Italy.",
       ],
     },
     program: {
