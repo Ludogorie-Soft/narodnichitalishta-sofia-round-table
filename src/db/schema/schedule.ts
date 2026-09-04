@@ -97,6 +97,7 @@ export const speakers = pgTable("speakers", {
   nameEn: text("name_en").notNull(),
   affiliationBg: text("affiliation_bg"),
   affiliationEn: text("affiliation_en"),
+  status: scheduleItemStatusEnum("status").notNull().default("confirmed"),
   ...timestamps,
 });
 

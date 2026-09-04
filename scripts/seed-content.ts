@@ -142,16 +142,21 @@ async function main() {
   }
 
   for (const speaker of speakerSeeds) {
+    const speakerRow = {
+      ...speaker,
+      status: speaker.status ?? "confirmed",
+    };
     await db
       .insert(speakers)
-      .values(speaker)
+      .values(speakerRow)
       .onConflictDoUpdate({
         target: speakers.id,
         set: {
-          nameBg: speaker.nameBg,
-          nameEn: speaker.nameEn,
-          affiliationBg: speaker.affiliationBg,
-          affiliationEn: speaker.affiliationEn,
+          nameBg: speakerRow.nameBg,
+          nameEn: speakerRow.nameEn,
+          affiliationBg: speakerRow.affiliationBg,
+          affiliationEn: speakerRow.affiliationEn,
+          status: speakerRow.status,
           updatedAt: now,
         },
       });

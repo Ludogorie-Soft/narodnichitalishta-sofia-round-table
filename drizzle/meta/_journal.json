@@ -22,6 +22,13 @@
       "when": 1788119325941,
       "tag": "0002_unusual_thaddeus_ross",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1788536189870,
+      "tag": "0003_speaker_status",
+      "breakpoints": true
     }
   ]
 }

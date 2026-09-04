@@ -1,0 +1,1 @@
+ALTER TABLE "speakers" ADD COLUMN "status" "schedule_item_status" DEFAULT 'confirmed' NOT NULL;

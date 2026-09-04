@@ -258,6 +258,7 @@ export type SpeakerSeed = {
   nameEn: string;
   affiliationBg: string | null;
   affiliationEn: string | null;
+  status?: ScheduleItemStatus;
 };
 
 export const speakerSeeds: SpeakerSeed[] = [
@@ -267,6 +268,7 @@ export const speakerSeeds: SpeakerSeed[] = [
     nameEn: "",
     affiliationBg: "Министър на културата",
     affiliationEn: null,
+    status: "to_be_confirmed",
   },
   {
     id: "speaker-vasil-terziev",
@@ -274,6 +276,7 @@ export const speakerSeeds: SpeakerSeed[] = [
     nameEn: "Vasil Terziev",
     affiliationBg: "Кмет на Столична община",
     affiliationEn: "Mayor of Sofia Municipality",
+    status: "to_be_confirmed",
   },
   {
     id: "speaker-tanya-chuntova",
@@ -409,6 +412,7 @@ export const speakerSeeds: SpeakerSeed[] = [
     nameEn: "",
     affiliationBg: null,
     affiliationEn: null,
+    status: "to_be_confirmed",
   },
   {
     id: "speaker-piotr-michalowski",
@@ -511,7 +515,7 @@ export const scheduleItemSeeds: ScheduleItemSeed[] = [
     titleEn: "Official opening",
     descriptionBg: "Приветствени думи",
     descriptionEn: "Opening remarks",
-    status: "to_be_confirmed",
+    status: "confirmed",
     sortOrder: 10,
     visible: true,
     speakerIds: [
@@ -699,7 +703,7 @@ export const scheduleItemSeeds: ScheduleItemSeed[] = [
     descriptionBg:
       "Размисли по чутите представяния и очакванията към бъдещата българска Европейска столица на културата",
     descriptionEn: null,
-    status: "to_be_confirmed",
+    status: "confirmed",
     sortOrder: 110,
     visible: true,
     speakerIds: [

@@ -85,15 +85,23 @@ function ScheduleItem({
         {item.speakers.length > 0 ? (
           <ul className="mt-3 space-y-2">
             {item.speakers.map((speaker) => (
-              <li className="leading-snug" key={speaker.id}>
-                <span className="font-semibold" lang={speaker.contentLocale}>
-                  {speaker.name}
-                </span>
-                {speaker.affiliation ? (
-                  <span className="text-neutral-600">
-                    {" "}
-                    — {speaker.affiliation}
+              <li
+                className="flex flex-wrap items-center gap-x-2 gap-y-1 leading-snug"
+                key={speaker.id}
+              >
+                <span>
+                  <span className="font-semibold" lang={speaker.contentLocale}>
+                    {speaker.name}
                   </span>
+                  {speaker.affiliation ? (
+                    <span className="text-neutral-600">
+                      {" "}
+                      — {speaker.affiliation}
+                    </span>
+                  ) : null}
+                </span>
+                {speaker.status !== "confirmed" && speaker.status ? (
+                  <StatusBadge locale={locale} status={speaker.status} />
                 ) : null}
               </li>
             ))}

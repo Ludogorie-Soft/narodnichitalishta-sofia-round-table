@@ -26,6 +26,7 @@ type PublicSpeaker = {
   id: string;
   name: string;
   affiliation: string | null;
+  status: ScheduleItemStatus;
   contentLocale: Locale;
 };
 
@@ -218,6 +219,7 @@ async function queryPublicSiteData(locale: Locale): Promise<PublicSiteData> {
           id: speaker.id,
           name: name.value ?? "",
           affiliation: affiliation.value,
+          status: speaker.status,
           contentLocale: name.contentLocale,
         };
       }),
@@ -331,7 +333,7 @@ async function queryPublicSiteData(locale: Locale): Promise<PublicSiteData> {
 
 export const getPublicSiteData = unstable_cache(
   queryPublicSiteData,
-  ["public-site-data", "schedule-fin"],
+  ["public-site-data", "speaker-tbc"],
   {
     revalidate: 60 * 60,
     tags: [PUBLIC_SITE_CACHE_TAG],

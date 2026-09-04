@@ -31,6 +31,18 @@ describe("conference seed data", () => {
       speakerSeeds.some((speaker) => speaker.id === "speaker-ivo-hristov"),
     ).toBe(false);
     expect(scheduleDaySeeds[1]?.subtitleBg).toContain("международните");
+    expect(
+      scheduleItemSeeds.filter((item) => item.status === "to_be_confirmed"),
+    ).toEqual([]);
+    expect(
+      speakerSeeds
+        .filter((speaker) => speaker.status === "to_be_confirmed")
+        .map((speaker) => speaker.id),
+    ).toEqual([
+      "speaker-evtim-miloshev",
+      "speaker-vasil-terziev",
+      "speaker-mep-tbc",
+    ]);
   });
 
   it("has no invalid times, overlaps, duplicate IDs, or orphan references", () => {

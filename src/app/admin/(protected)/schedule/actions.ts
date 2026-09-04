@@ -370,6 +370,7 @@ export async function saveSpeakerAction(
         nameEn: title,
         affiliationBg: description,
         affiliationEn: description,
+        status: z.enum(scheduleItemStatuses),
       })
       .safeParse({
         id: text(formData, "id"),
@@ -377,6 +378,7 @@ export async function saveSpeakerAction(
         nameEn: text(formData, "nameEn"),
         affiliationBg: text(formData, "affiliationBg"),
         affiliationEn: text(formData, "affiliationEn"),
+        status: text(formData, "status") || "confirmed",
       });
     if (!parsed.success || (!parsed.data?.nameBg && !parsed.data?.nameEn)) {
       return { error: "Въведете име на поне един език." };
@@ -391,6 +393,7 @@ export async function saveSpeakerAction(
       nameEn: parsed.data.nameEn,
       affiliationBg: optional(parsed.data.affiliationBg),
       affiliationEn: optional(parsed.data.affiliationEn),
+      status: parsed.data.status,
     };
     if (existing) {
       await db

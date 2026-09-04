@@ -55,6 +55,7 @@ type Speaker = {
   nameEn: string;
   affiliationBg: string | null;
   affiliationEn: string | null;
+  status: string;
 };
 type Item = {
   id: string;
@@ -683,6 +684,18 @@ export function SpeakerForm({ speaker }: { speaker?: Speaker }) {
           </fieldset>
         ))}
       </div>
+      <label className="text-sm font-semibold">
+        Статус
+        <select
+          className={fieldClass}
+          defaultValue={speaker?.status ?? "confirmed"}
+          name="status"
+        >
+          {statuses.map((status) => (
+            <option key={status}>{status}</option>
+          ))}
+        </select>
+      </label>
       <Preview values={preview} />
       <SaveBar
         id="speaker-form"
