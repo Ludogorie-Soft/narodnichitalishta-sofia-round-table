@@ -4,6 +4,7 @@ import {
   buildEventJsonLd,
   buildRobots,
   buildSitemap,
+  CONFERENCE_FAVICON,
   CONFERENCE_OG_IMAGE,
   publicPageMetadata,
   validateEventJsonLd,
@@ -29,6 +30,13 @@ describe("public metadata", () => {
       expect.arrayContaining([
         expect.objectContaining({ url: CONFERENCE_OG_IMAGE.path }),
       ]),
+    );
+    expect(bg.icons).toEqual(
+      expect.objectContaining({
+        icon: expect.arrayContaining([
+          expect.objectContaining({ url: CONFERENCE_FAVICON.path }),
+        ]),
+      }),
     );
   });
 });

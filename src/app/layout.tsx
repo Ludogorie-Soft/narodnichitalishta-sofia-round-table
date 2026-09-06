@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { getSiteUrl } from "@/lib/env";
 import { defaultLocale, isLocale } from "@/lib/i18n";
+import { CONFERENCE_FAVICON } from "@/lib/seo";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -13,6 +14,21 @@ export const metadata: Metadata = {
   },
   description:
     "International conference: Culture as a Catalyst for Local and Regional Development. Sofia, 18–19 September 2026.",
+  icons: {
+    icon: [
+      {
+        url: CONFERENCE_FAVICON.path,
+        type: CONFERENCE_FAVICON.type,
+        sizes: CONFERENCE_FAVICON.sizes,
+      },
+    ],
+    apple: [
+      {
+        url: CONFERENCE_FAVICON.path,
+        sizes: CONFERENCE_FAVICON.sizes,
+      },
+    ],
+  },
 };
 
 export default async function RootLayout({

@@ -21,6 +21,10 @@ test("Bulgarian and English pages expose language metadata", async ({
   await expect(
     page.locator('link[rel="alternate"][hreflang="en"]'),
   ).toHaveAttribute("href", /\/en$/);
+  await expect(page.locator('link[rel="icon"]').first()).toHaveAttribute(
+    "href",
+    /NC-Favicon-300x300\.jpg/,
+  );
   await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(
     1,
   );

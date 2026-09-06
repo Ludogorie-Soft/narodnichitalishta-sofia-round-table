@@ -10,6 +10,12 @@ export const CONFERENCE_OG_IMAGE = {
   height: 480,
 } as const;
 
+export const CONFERENCE_FAVICON = {
+  path: "/brand/NC-Favicon-300x300.jpg",
+  type: "image/jpeg",
+  sizes: "300x300",
+} as const;
+
 export function absoluteUrl(path: string, siteUrl = getSiteUrl()): string {
   if (path.startsWith("http://") || path.startsWith("https://")) {
     return path;
@@ -63,6 +69,21 @@ export function publicPageMetadata(locale: Locale): Metadata {
     robots: {
       index: true,
       follow: true,
+    },
+    icons: {
+      icon: [
+        {
+          url: CONFERENCE_FAVICON.path,
+          type: CONFERENCE_FAVICON.type,
+          sizes: CONFERENCE_FAVICON.sizes,
+        },
+      ],
+      apple: [
+        {
+          url: CONFERENCE_FAVICON.path,
+          sizes: CONFERENCE_FAVICON.sizes,
+        },
+      ],
     },
   };
 }
