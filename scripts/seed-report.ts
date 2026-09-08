@@ -87,7 +87,7 @@ export function analyzeSeedData(): SeedIssue[] {
         message: `Unknown day ${panel.dayId}.`,
       });
     }
-    if (!panel.titleEn) {
+    if (missingText(panel.titleEn)) {
       issues.push({
         severity: "warning",
         code: "missing_translation",
@@ -132,7 +132,7 @@ export function analyzeSeedData(): SeedIssue[] {
         });
       }
     }
-    if (!item.titleEn) {
+    if (missingText(item.titleEn)) {
       issues.push({
         severity: "warning",
         code: "missing_translation",
@@ -155,7 +155,7 @@ export function analyzeSeedData(): SeedIssue[] {
   }
 
   for (const speaker of speakerSeeds) {
-    if (!speaker.nameEn) {
+    if (missingText(speaker.nameEn)) {
       issues.push({
         severity: "warning",
         code: "missing_translation",

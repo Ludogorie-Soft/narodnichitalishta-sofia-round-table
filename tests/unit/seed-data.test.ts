@@ -53,16 +53,11 @@ describe("conference seed data", () => {
     expect(errors).toEqual([]);
   });
 
-  it("reports the intentionally incomplete English translation", () => {
+  it("has a complete English translation with no missing_translation warnings", () => {
     const translationWarnings = analyzeSeedData().filter(
       (issue) => issue.code === "missing_translation",
     );
 
-    expect(translationWarnings.length).toBeGreaterThan(0);
-    expect(
-      translationWarnings.some(
-        (issue) => issue.entity === "panel:panel-2-european-capital",
-      ),
-    ).toBe(true);
+    expect(translationWarnings).toEqual([]);
   });
 });

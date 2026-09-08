@@ -61,18 +61,16 @@ test("Bulgarian program renders both structured days", async ({ page }) => {
   await expect(page.getByText("Дом на Европа").first()).toBeVisible();
 });
 
-test("English program identifies untranslated source entries", async ({
-  page,
-}) => {
+test("English program is fully translated", async ({ page }) => {
   await page.goto("/en#program");
   await expect(
-    page.getByText("English translation pending").first(),
-  ).toBeVisible();
+    page.getByText("English translation pending"),
+  ).toHaveCount(0);
   await expect(
     page.getByRole("heading", {
-      name: /ПАНЕЛ 2 — Ролята на читалищата/,
+      name: /PANEL 2 — The Role of Community Centers/,
     }),
-  ).toHaveAttribute("lang", "bg");
+  ).toHaveAttribute("lang", "en");
 });
 
 test("day navigation works from the keyboard", async ({ page }) => {
